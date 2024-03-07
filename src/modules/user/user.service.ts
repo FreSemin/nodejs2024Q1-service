@@ -45,7 +45,9 @@ export class UserService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    this.findOne(id);
+
+    this.userEntity.remove(id);
   }
 }
