@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface IUser {
@@ -14,6 +15,7 @@ export class User implements IUser {
 
   login: string;
 
+  @Exclude()
   password: string;
 
   version: number = 0;
