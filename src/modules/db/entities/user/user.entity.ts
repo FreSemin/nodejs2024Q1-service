@@ -39,6 +39,10 @@ export class UserEntity {
   remove(id: string): void {
     const userIndex: number = this.user.findIndex((user) => user.id === id);
 
+    if (userIndex !== -1) {
       this.user.splice(userIndex, 1);
+
+      return;
+    }
   }
 }
