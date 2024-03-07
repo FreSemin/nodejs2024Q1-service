@@ -8,11 +8,11 @@ import { User } from 'src/models';
 export class UserService {
   constructor(private readonly userEntity: UserEntity) {}
 
-  create(createUserDto: CreateUserDto) {
+  create(createUserDto: CreateUserDto): User {
     return this.userEntity.create(createUserDto);
   }
 
-  findAll() {
+  findAll(): User[] {
     return this.userEntity.findAll();
   }
 
