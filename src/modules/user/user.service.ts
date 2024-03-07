@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from '../db/entities/user.entity';
@@ -16,11 +20,12 @@ export class UserService {
     return this.userEntity.findAll();
   }
 
-  findOne(id: string): User | null {
+  findOne(id: string): User {
     const user: User | null = this.userEntity.findOne(id);
 
     if (!user) {
-      throw new NotFoundException();
+      // TODO: add message to config or constants
+      throw new NotFoundException('User not found!');
     }
 
     return user;
