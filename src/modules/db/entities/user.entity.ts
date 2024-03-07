@@ -23,4 +23,16 @@ export class UserEntity {
   findOne(id: string): User | null {
     return this.user.find((user) => user.id === id) || null;
   }
+
+  update(id: string, updatedUser: User): User | null {
+    const userIndex: number = this.user.findIndex((user) => user.id === id);
+
+    if (userIndex !== -1) {
+      this.user[userIndex] = new User(updatedUser);
+
+      return this.user[userIndex];
+    }
+
+    return null;
+  }
 }

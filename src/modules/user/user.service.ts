@@ -26,8 +26,18 @@ export class UserService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto): User {
+    const user: User = this.findOne(id);
+
+    if (updateUserDto.oldPassword !== user.password) {
+      // TODO: add password message to config or constants
+      throw new ForbiddenException('Wrong password!');
+    }
+
+    return this.userEntity.update(id, {
+      ...user,
+      password: updateUserDto.newPassword,
+    });
   }
 
   remove(id: number) {
