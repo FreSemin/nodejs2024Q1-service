@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from '../db/entities/user.entity';
+import { UserEntity } from '../db/entities/user/user.entity';
 import { User } from 'src/models';
 
 @Injectable()

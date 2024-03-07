@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserEntity } from './entities/user.entity';
+import { UserEntity } from './entities/user/user.entity';
 
 @Module({
   providers: [UserEntity],
