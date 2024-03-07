@@ -16,6 +16,7 @@ export class UserEntity {
     return user;
   }
 
+  findAll(): User[] {
     return this.user;
   }
 }
