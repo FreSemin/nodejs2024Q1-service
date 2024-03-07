@@ -19,4 +19,8 @@ export class UserEntity {
   findAll(): User[] {
     return this.user;
   }
+
+  findOne(id: string): User | null {
+    return this.user.find((user) => user.id === id) || null;
+  }
 }
