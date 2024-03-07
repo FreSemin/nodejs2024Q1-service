@@ -8,7 +8,7 @@ export class UserService {
   constructor(private readonly userEntity: UserEntity) {}
 
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    return this.userEntity.create(createUserDto);
   }
 
   findAll() {
