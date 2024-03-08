@@ -13,9 +13,9 @@ export class Track implements ITRack {
 
   name: string;
 
-  artistId: string;
+  artistId: string | null;
 
-  albumId: string;
+  albumId: string | null;
 
   duration: number;
 
