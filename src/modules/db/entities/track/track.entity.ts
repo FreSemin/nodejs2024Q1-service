@@ -20,6 +20,10 @@ export class TrackEntity {
     return this.track;
   }
 
+  findAllByAlbumId(id: string): Track[] {
+    return this.track.filter((track) => track.albumId === id);
+  }
+
   findOne(id: string): Track | null {
     return this.track.find((track) => track.id === id) || null;
   }
