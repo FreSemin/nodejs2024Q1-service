@@ -24,6 +24,10 @@ export class AlbumEntity {
     return this.album.find((album) => album.id === id) || null;
   }
 
+  findAllByArtistId(id: string): Album[] {
+    return this.album.filter((album) => album.artistId === id);
+  }
+
   update(id: string, updatedAlbum: Album): Album | null {
     const albumIndex: number = this.album.findIndex((album) => album.id === id);
 
