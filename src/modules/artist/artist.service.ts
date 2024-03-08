@@ -36,6 +36,7 @@ export class ArtistService {
     });
   }
 
+  // TODO: on delete set null for artist tracks and albums
   remove(id: string) {
     this.findOne(id);
 
