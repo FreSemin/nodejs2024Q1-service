@@ -2,11 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { AlbumEntity } from '../db/entities/album/album.entity';
-import { Album } from 'src/models';
+import { Album, Track } from 'src/models';
+import { TrackEntity } from '../db/entities/track/track.entity';
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly albumEntity: AlbumEntity) {}
+  constructor(
+    private readonly albumEntity: AlbumEntity,
+    private readonly trackEntity: TrackEntity,
+  ) {}
 
   create(createAlbumDto: CreateAlbumDto) {
     return this.albumEntity.create(createAlbumDto);
@@ -40,5 +44,16 @@ export class AlbumService {
     this.findOne(id);
 
     this.albumEntity.remove(id);
+
+    const albumTracks: Track[] = this.trackEntity.findAllByAlbumId(id);
+
+    // TODO: remake using promises
+    // TODO: refactor using Prisma
+    albumTracks.forEach((track) => {
+      this.trackEntity.update(track.id, {
+        ...track,
+        albumId: null,
+      });
+    });
   }
 }
