@@ -14,7 +14,7 @@ export class Album implements IAlbum {
 
   year: number;
 
-  artistId: string;
+  artistId: string = null;
 
   constructor(album: Partial<IAlbum>) {
     Object.assign(this, album);
