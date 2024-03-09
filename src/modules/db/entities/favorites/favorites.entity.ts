@@ -78,4 +78,26 @@ export class FavoritesEntity {
       return;
     }
   }
+
+  addAlbum(id: string): void {
+    this.favorites.albums.push(id);
+  }
+
+  isFavoriteAlbum(id: string): boolean {
+    return this.favorites.albums.find((albumId) => albumId === id)
+      ? true
+      : false;
+  }
+
+  deleteAlbum(id: string): void {
+    const albumIndex: number = this.favorites.albums.findIndex(
+      (albumId) => albumId === id,
+    );
+
+    if (albumIndex !== -1) {
+      this.favorites.albums.splice(albumIndex, 1);
+
+      return;
+    }
+  }
 }

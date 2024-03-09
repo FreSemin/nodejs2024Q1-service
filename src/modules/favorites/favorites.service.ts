@@ -3,9 +3,10 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Artist, FavoritesResponse, Track } from 'src/models';
+import { Album, Artist, FavoritesResponse, Track } from 'src/models';
 import { FavoritesEntity } from '../db/entities/favorites/favorites.entity';
 import { TrackEntity } from '../db/entities/track/track.entity';
+import { AlbumEntity } from '../db/entities/album/album.entity';
 import { ArtistEntity } from '../db/entities/artist/artist.entity';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class FavoritesService {
     private readonly favoritesEntity: FavoritesEntity,
     private readonly artistEntity: ArtistEntity,
     private readonly trackEntity: TrackEntity,
+    private readonly albumEntity: AlbumEntity,
   ) {}
 
   findAll(): FavoritesResponse {
@@ -68,5 +70,30 @@ export class FavoritesService {
     }
 
     this.favoritesEntity.deleteArtist(id);
+  }
+
+  addAlbum(id: string): string {
+    const album: Album = this.albumEntity.findOne(id);
+
+    // TODO: refactor add strings to constants
+    if (!album) {
+      throw new UnprocessableEntityException(
+        `Album with id = ${id} doesn't exists`,
+      );
+    }
+
+    this.favoritesEntity.addAlbum(id);
+
+    return 'Album was added to favorites!';
+  }
+
+  deleteAlbum(id: string): void {
+    const isFavorite: boolean = this.favoritesEntity.isFavoriteAlbum(id);
+
+    if (!isFavorite) {
+      throw new NotFoundException(`Album with id = ${id} is not favorite!`);
+    }
+
+    this.favoritesEntity.deleteAlbum(id);
   }
 }
