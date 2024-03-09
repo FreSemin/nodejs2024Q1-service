@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Favorites, Track } from 'src/models';
+import { FavoritesResponse, Track } from 'src/models';
 import { FavoritesEntity } from '../db/entities/favorites/favorites.entity';
 import { TrackEntity } from '../db/entities/track/track.entity';
 
@@ -14,7 +14,7 @@ export class FavoritesService {
     private readonly trackEntity: TrackEntity,
   ) {}
 
-  findAll(): Favorites {
+  findAll(): FavoritesResponse {
     return this.favoritesEntity.findAll();
   }
 
