@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Artist } from 'src/models';
+import { Album, Artist, Track } from 'src/models';
 import { CreateArtistDto } from 'src/modules/artist/dto/create-artist.dto';
+import { AlbumEntity } from '../album/album.entity';
+import { TrackEntity } from '../track/track.entity';
+import { FavoritesEntity } from '../favorites/favorites.entity';
 
 @Injectable()
 export class ArtistEntity {
   private artist: Artist[] = [];
 
-  constructor() {}
+  constructor(
+    private readonly albumEntity: AlbumEntity,
+    private readonly trackEntity: TrackEntity,
+    private readonly favoritesEntity: FavoritesEntity,
+  ) {}
 
   create(createArtistDto: CreateArtistDto): Artist {
     const artist: Artist = new Artist(createArtistDto);
@@ -45,6 +52,27 @@ export class ArtistEntity {
 
     if (artistIndex !== -1) {
       this.artist.splice(artistIndex, 1);
+
+      // TODO: refactor using prisma
+      const artistAlbums: Album[] = this.albumEntity.findAllByArtistId(id);
+
+      artistAlbums.forEach((album) => {
+        this.albumEntity.update(album.id, {
+          ...album,
+          artistId: null,
+        });
+      });
+
+      const artistTracks: Track[] = this.trackEntity.findAllByArtistId(id);
+
+      artistTracks.forEach((track) => {
+        this.trackEntity.update(track.id, {
+          ...track,
+          artistId: null,
+        });
+      });
+
+      this.favoritesEntity.deleteArtist(id);
 
       return;
     }
