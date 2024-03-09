@@ -1,15 +1,13 @@
-import { Album, Artist, Track } from '..';
-
 export interface IFavorites {
-  artists: Artist[];
-  albums: Album[];
-  tracks: Track[];
+  artists: string[];
+  albums: string[];
+  tracks: string[];
 }
 
 export class Favorites implements IFavorites {
-  artists: Artist[] = [];
-  albums: Album[] = [];
-  tracks: Track[] = [];
+  artists: string[] = [];
+  albums: string[] = [];
+  tracks: string[] = [];
 
   constructor(favorites: Partial<IFavorites>) {
     Object.assign(this, favorites);
