@@ -56,4 +56,26 @@ export class FavoritesEntity {
       return;
     }
   }
+
+  addArtist(id: string): void {
+    this.favorites.artists.push(id);
+  }
+
+  isFavoriteArtist(id: string): boolean {
+    return this.favorites.artists.find((artistId) => artistId === id)
+      ? true
+      : false;
+  }
+
+  deleteArtist(id: string): void {
+    const artistIdIndex: number = this.favorites.artists.findIndex(
+      (artistId) => artistId === id,
+    );
+
+    if (artistIdIndex !== -1) {
+      this.favorites.artists.splice(artistIdIndex, 1);
+
+      return;
+    }
+  }
 }
