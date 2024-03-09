@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Album, Artist, Track } from 'src/models';
 import { CreateArtistDto } from 'src/modules/artist/dto/create-artist.dto';
 import { AlbumEntity } from '../album/album.entity';
@@ -12,6 +12,8 @@ export class ArtistEntity {
   constructor(
     private readonly albumEntity: AlbumEntity,
     private readonly trackEntity: TrackEntity,
+
+    @Inject(forwardRef(() => FavoritesEntity))
     private readonly favoritesEntity: FavoritesEntity,
   ) {}
 

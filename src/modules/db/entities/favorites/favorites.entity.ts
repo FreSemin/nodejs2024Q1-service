@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Album, Artist, Favorites, FavoritesResponse, Track } from 'src/models';
 import { TrackEntity } from '../track/track.entity';
 import { ArtistEntity } from '../artist/artist.entity';
@@ -9,8 +9,13 @@ export class FavoritesEntity {
   private favorites: Favorites = new Favorites({});
 
   constructor(
+    @Inject(forwardRef(() => ArtistEntity))
     private readonly artistEntity: ArtistEntity,
+
+    @Inject(forwardRef(() => TrackEntity))
     private readonly trackEntity: TrackEntity,
+
+    @Inject(forwardRef(() => AlbumEntity))
     private readonly albumEntity: AlbumEntity,
   ) {}
 

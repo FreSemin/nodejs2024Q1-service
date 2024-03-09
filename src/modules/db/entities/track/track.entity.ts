@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Track } from 'src/models';
 import { CreateTrackDto } from 'src/modules/track/dto/create-track.dto';
+import { FavoritesEntity } from '../favorites/favorites.entity';
 
 @Injectable()
 export class TrackEntity {
   private track: Track[] = [];
 
-  constructor() {}
+  constructor(
+    @Inject(forwardRef(() => FavoritesEntity))
+    private readonly favoritesEntity: FavoritesEntity,
+  ) {}
 
   create(createTrackDto: CreateTrackDto): Track {
     const track: Track = new Track(createTrackDto);
@@ -49,6 +53,8 @@ export class TrackEntity {
 
     if (trackIndex !== -1) {
       this.track.splice(trackIndex, 1);
+
+      this.favoritesEntity.deleteTrack(id);
 
       return;
     }
