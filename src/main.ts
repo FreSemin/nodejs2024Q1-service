@@ -2,7 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule } from '@nestjs/swagger';
+import { readFileSync } from 'fs';
+import * as yaml from 'js-yaml';
 
+// TODO: refactor
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -12,6 +16,14 @@ async function bootstrap() {
   const port = configService.get<number>('PORT') || 4000;
 
   app.useGlobalPipes(new ValidationPipe());
+
+  const swaggerDoc = yaml.load(
+    readFileSync('doc/api.yaml', { encoding: 'utf-8' }),
+  );
+
+  const document = SwaggerModule.createDocument(app, swaggerDoc);
+
+  SwaggerModule.setup('swagger', app, document);
 
   await app.listen(port).then(() => {
     // TODO: add message to constants
