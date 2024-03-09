@@ -10,4 +10,8 @@ export class FavoritesEntity {
   findAll() {
     return this.favorites;
   }
+
+  addTrack(id: string): void {
+    this.favorites.tracks.push(id);
+  }
 }
