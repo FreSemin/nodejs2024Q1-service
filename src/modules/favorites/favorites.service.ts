@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { Favorites, Track } from 'src/models';
 import { FavoritesEntity } from '../db/entities/favorites/favorites.entity';
 import { TrackEntity } from '../db/entities/track/track.entity';
@@ -27,5 +31,15 @@ export class FavoritesService {
     this.favoritesEntity.addTrack(id);
 
     return 'Track was added to favorites!';
+  }
+
+  deleteTrack(id: string): void {
+    const isFavorite: boolean = this.favoritesEntity.isFavoriteTrack(id);
+
+    if (!isFavorite) {
+      throw new NotFoundException(`Track with id = ${id} is not favorite!`);
+    }
+
+    this.favoritesEntity.deleteTrack(id);
   }
 }

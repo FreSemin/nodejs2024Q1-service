@@ -14,4 +14,22 @@ export class FavoritesEntity {
   addTrack(id: string): void {
     this.favorites.tracks.push(id);
   }
+
+  isFavoriteTrack(id: string): boolean {
+    return this.favorites.tracks.find((trackId) => trackId === id)
+      ? true
+      : false;
+  }
+
+  deleteTrack(id: string): void {
+    const trackIdIndex: number = this.favorites.tracks.findIndex(
+      (trackId) => trackId === id,
+    );
+
+    if (trackIdIndex !== -1) {
+      this.favorites.tracks.splice(trackIdIndex, 1);
+
+      return;
+    }
+  }
 }
