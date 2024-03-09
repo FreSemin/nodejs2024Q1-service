@@ -7,7 +7,7 @@ export class FavoritesEntity {
 
   constructor() {}
 
-  findAll() {
+  findAll(): Favorites {
     return this.favorites;
   }
 
