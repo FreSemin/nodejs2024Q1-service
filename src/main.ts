@@ -21,9 +21,7 @@ async function bootstrap() {
     readFileSync('doc/api.yaml', { encoding: 'utf-8' }),
   );
 
-  const document = SwaggerModule.createDocument(app, swaggerDoc);
-
-  SwaggerModule.setup('doc', app, document);
+  SwaggerModule.setup('doc', app, swaggerDoc);
 
   await app.listen(port).then(() => {
     // TODO: add message to constants
