@@ -23,7 +23,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerDoc);
 
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('doc', app, document);
 
   await app.listen(port).then(() => {
     // TODO: add message to constants
