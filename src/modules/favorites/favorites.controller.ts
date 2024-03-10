@@ -8,6 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
+import { StatusCodes } from 'http-status-codes';
 
 @Controller('favs')
 export class FavoritesController {
@@ -24,7 +25,7 @@ export class FavoritesController {
   }
 
   @Delete('track/:id')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   deleteTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     this.favoritesService.deleteTrack(id);
   }
@@ -35,7 +36,7 @@ export class FavoritesController {
   }
 
   @Delete('artist/:id')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   deleteArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     this.favoritesService.deleteArtist(id);
   }
@@ -46,7 +47,7 @@ export class FavoritesController {
   }
 
   @Delete('album/:id')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   deleteAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     this.favoritesService.deleteAlbum(id);
   }

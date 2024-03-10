@@ -14,6 +14,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { StatusCodes } from 'http-status-codes';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -46,7 +47,7 @@ export class UserController {
 
   // TODO: add code to config or constants
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.userService.remove(id);
   }
