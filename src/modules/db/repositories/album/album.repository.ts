@@ -1,19 +1,19 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Album, Track } from 'src/models';
 import { CreateAlbumDto } from 'src/modules/album/dto/create-album.dto';
-import { FavoritesEntity } from '../favorites/favorites.entity';
-import { TrackEntity } from '../track/track.entity';
+import { FavoritesRepository } from '../favorites/favorites.repository';
+import { TrackRepository } from '../track/track.repository';
 
 @Injectable()
-export class AlbumEntity {
+export class AlbumRepository {
   private album: Album[] = [];
 
   constructor(
-    @Inject(forwardRef(() => FavoritesEntity))
-    private readonly favoritesEntity: FavoritesEntity,
+    @Inject(forwardRef(() => FavoritesRepository))
+    private readonly favoritesRepository: FavoritesRepository,
 
-    @Inject(forwardRef(() => TrackEntity))
-    private readonly trackEntity: TrackEntity,
+    @Inject(forwardRef(() => TrackRepository))
+    private readonly trackRepository: TrackRepository,
   ) {}
 
   create(createAlbumDto: CreateAlbumDto): Album {
@@ -54,17 +54,17 @@ export class AlbumEntity {
     if (albumIndex !== -1) {
       this.album.splice(albumIndex, 1);
 
-      const albumTracks: Track[] = this.trackEntity.findAllByAlbumId(id);
+      const albumTracks: Track[] = this.trackRepository.findAllByAlbumId(id);
 
       // TODO: refactor using Prisma
       albumTracks.forEach((track) => {
-        this.trackEntity.update(track.id, {
+        this.trackRepository.update(track.id, {
           ...track,
           albumId: null,
         });
       });
 
-      this.favoritesEntity.deleteAlbum(id);
+      this.favoritesRepository.deleteAlbum(id);
 
       return;
     }

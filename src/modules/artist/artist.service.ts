@@ -10,15 +10,15 @@ export class ArtistService {
   constructor(private readonly dbService: DbService) {}
 
   create(createArtistDto: CreateArtistDto): Artist {
-    return this.dbService.artistEntity.create(createArtistDto);
+    return this.dbService.artistRepository.create(createArtistDto);
   }
 
   findAll(): Artist[] {
-    return this.dbService.artistEntity.findAll();
+    return this.dbService.artistRepository.findAll();
   }
 
   findOne(id: string): Artist {
-    const artist: Artist | null = this.dbService.artistEntity.findOne(id);
+    const artist: Artist | null = this.dbService.artistRepository.findOne(id);
 
     if (!artist) {
       // TODO: add message to config or constants
@@ -31,7 +31,7 @@ export class ArtistService {
   update(id: string, updateArtistDto: UpdateArtistDto): Artist {
     const artist: Artist = this.findOne(id);
 
-    return this.dbService.artistEntity.update(id, {
+    return this.dbService.artistRepository.update(id, {
       ...artist,
       ...updateArtistDto,
     });
@@ -40,6 +40,6 @@ export class ArtistService {
   remove(id: string) {
     this.findOne(id);
 
-    this.dbService.artistEntity.remove(id);
+    this.dbService.artistRepository.remove(id);
   }
 }

@@ -11,7 +11,7 @@ export class AlbumService {
 
   create(createAlbumDto: CreateAlbumDto) {
     if (createAlbumDto.artistId) {
-      const artist: Artist | null = this.dbService.artistEntity.findOne(
+      const artist: Artist | null = this.dbService.artistRepository.findOne(
         createAlbumDto.artistId,
       );
 
@@ -20,15 +20,15 @@ export class AlbumService {
       }
     }
 
-    return this.dbService.albumEntity.create(createAlbumDto);
+    return this.dbService.albumRepository.create(createAlbumDto);
   }
 
   findAll() {
-    return this.dbService.albumEntity.findAll();
+    return this.dbService.albumRepository.findAll();
   }
 
   findOne(id: string) {
-    const album: Album | null = this.dbService.albumEntity.findOne(id);
+    const album: Album | null = this.dbService.albumRepository.findOne(id);
 
     if (!album) {
       // TODO: add message to config or constants
@@ -42,7 +42,7 @@ export class AlbumService {
     const album: Album = this.findOne(id);
 
     if (updateAlbumDto.artistId) {
-      const artist: Artist | null = this.dbService.artistEntity.findOne(
+      const artist: Artist | null = this.dbService.artistRepository.findOne(
         updateAlbumDto.artistId,
       );
 
@@ -51,7 +51,7 @@ export class AlbumService {
       }
     }
 
-    return this.dbService.albumEntity.update(id, {
+    return this.dbService.albumRepository.update(id, {
       ...album,
       ...updateAlbumDto,
     });
@@ -60,6 +60,6 @@ export class AlbumService {
   remove(id: string) {
     this.findOne(id);
 
-    this.dbService.albumEntity.remove(id);
+    this.dbService.albumRepository.remove(id);
   }
 }

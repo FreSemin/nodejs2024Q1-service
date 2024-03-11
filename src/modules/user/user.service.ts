@@ -10,15 +10,15 @@ export class UserService {
   constructor(private readonly dbService: DbService) {}
 
   create(createUserDto: CreateUserDto): User {
-    return this.dbService.userEntity.create(createUserDto);
+    return this.dbService.userRepository.create(createUserDto);
   }
 
   findAll(): User[] {
-    return this.dbService.userEntity.findAll();
+    return this.dbService.userRepository.findAll();
   }
 
   findOne(id: string): User {
-    const user: User | null = this.dbService.userEntity.findOne(id);
+    const user: User | null = this.dbService.userRepository.findOne(id);
 
     if (!user) {
       // TODO: add message to config or constants
@@ -36,7 +36,7 @@ export class UserService {
       throw new ForbiddenError('Wrong password!');
     }
 
-    return this.dbService.userEntity.update(id, {
+    return this.dbService.userRepository.update(id, {
       ...user,
       password: updateUserDto.newPassword,
     });
@@ -45,6 +45,6 @@ export class UserService {
   remove(id: string) {
     this.findOne(id);
 
-    this.dbService.userEntity.remove(id);
+    this.dbService.userRepository.remove(id);
   }
 }

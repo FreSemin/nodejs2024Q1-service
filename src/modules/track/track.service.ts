@@ -11,7 +11,7 @@ export class TrackService {
 
   create(createTrackDto: CreateTrackDto) {
     if (createTrackDto.artistId) {
-      const artist: Artist | null = this.dbService.artistEntity.findOne(
+      const artist: Artist | null = this.dbService.artistRepository.findOne(
         createTrackDto.artistId,
       );
 
@@ -21,7 +21,7 @@ export class TrackService {
     }
 
     if (createTrackDto.albumId) {
-      const album: Album | null = this.dbService.albumEntity.findOne(
+      const album: Album | null = this.dbService.albumRepository.findOne(
         createTrackDto.albumId,
       );
 
@@ -30,15 +30,15 @@ export class TrackService {
       }
     }
 
-    return this.dbService.trackEntity.create(createTrackDto);
+    return this.dbService.trackRepository.create(createTrackDto);
   }
 
   findAll(): Track[] {
-    return this.dbService.trackEntity.findAll();
+    return this.dbService.trackRepository.findAll();
   }
 
   findOne(id: string): Track {
-    const track: Track | null = this.dbService.trackEntity.findOne(id);
+    const track: Track | null = this.dbService.trackRepository.findOne(id);
 
     if (!track) {
       // TODO: add message to config or constants
@@ -52,7 +52,7 @@ export class TrackService {
     const track: Track = this.findOne(id);
 
     if (updateTrackDto.artistId) {
-      const artist: Artist | null = this.dbService.artistEntity.findOne(
+      const artist: Artist | null = this.dbService.artistRepository.findOne(
         updateTrackDto.artistId,
       );
 
@@ -62,7 +62,7 @@ export class TrackService {
     }
 
     if (updateTrackDto.albumId) {
-      const album: Album | null = this.dbService.albumEntity.findOne(
+      const album: Album | null = this.dbService.albumRepository.findOne(
         updateTrackDto.albumId,
       );
 
@@ -71,7 +71,7 @@ export class TrackService {
       }
     }
 
-    return this.dbService.trackEntity.update(id, {
+    return this.dbService.trackRepository.update(id, {
       ...track,
       ...updateTrackDto,
     });
@@ -80,6 +80,6 @@ export class TrackService {
   remove(id: string) {
     this.findOne(id);
 
-    this.dbService.trackEntity.remove(id);
+    this.dbService.trackRepository.remove(id);
   }
 }

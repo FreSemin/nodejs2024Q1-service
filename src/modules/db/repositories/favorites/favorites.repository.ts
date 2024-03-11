@@ -1,36 +1,36 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Album, Artist, Favorites, FavoritesResponse, Track } from 'src/models';
-import { TrackEntity } from '../track/track.entity';
-import { ArtistEntity } from '../artist/artist.entity';
-import { AlbumEntity } from '../album/album.entity';
+import { TrackRepository } from '../track/track.repository';
+import { ArtistRepository } from '../artist/artist.repository';
+import { AlbumRepository } from '../album/album.repository';
 
 @Injectable()
-export class FavoritesEntity {
+export class FavoritesRepository {
   private favorites: Favorites = new Favorites({});
 
   constructor(
-    @Inject(forwardRef(() => ArtistEntity))
-    private readonly artistEntity: ArtistEntity,
+    @Inject(forwardRef(() => ArtistRepository))
+    private readonly artistRepository: ArtistRepository,
 
-    @Inject(forwardRef(() => TrackEntity))
-    private readonly trackEntity: TrackEntity,
+    @Inject(forwardRef(() => TrackRepository))
+    private readonly trackRepository: TrackRepository,
 
-    @Inject(forwardRef(() => AlbumEntity))
-    private readonly albumEntity: AlbumEntity,
+    @Inject(forwardRef(() => AlbumRepository))
+    private readonly albumRepository: AlbumRepository,
   ) {}
 
   findAll(): FavoritesResponse {
     // TODO: refactor using Prisma
     const artists: Artist[] = this.favorites.artists.map((artistId) => {
-      return this.artistEntity.findOne(artistId);
+      return this.artistRepository.findOne(artistId);
     });
 
     const tracks: Track[] = this.favorites.tracks.map((trackId) => {
-      return this.trackEntity.findOne(trackId);
+      return this.trackRepository.findOne(trackId);
     });
 
     const albums: Album[] = this.favorites.albums.map((albumId) => {
-      return this.albumEntity.findOne(albumId);
+      return this.albumRepository.findOne(albumId);
     });
 
     return new FavoritesResponse({

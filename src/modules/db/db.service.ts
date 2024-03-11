@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from './entities/user/user.entity';
-import { TrackEntity } from './entities/track/track.entity';
-import { ArtistEntity } from './entities/artist/artist.entity';
-import { AlbumEntity } from './entities/album/album.entity';
-import { FavoritesEntity } from './entities/favorites/favorites.entity';
+import { UserRepository } from './repositories/user/user.repository';
+import { TrackRepository } from './repositories/track/track.repository';
+import { ArtistRepository } from './repositories/artist/artist.repository';
+import { AlbumRepository } from './repositories/album/album.repository';
+import { FavoritesRepository } from './repositories/favorites/favorites.repository';
 
 @Injectable()
 export class DbService {
   constructor(
-    readonly userEntity: UserEntity,
-    readonly artistEntity: ArtistEntity,
-    readonly trackEntity: TrackEntity,
-    readonly albumEntity: AlbumEntity,
-    readonly favoritesEntity: FavoritesEntity,
+    readonly userRepository: UserRepository,
+    readonly artistRepository: ArtistRepository,
+    readonly trackRepository: TrackRepository,
+    readonly albumRepository: AlbumRepository,
+    readonly favoritesRepository: FavoritesRepository,
   ) {}
 }

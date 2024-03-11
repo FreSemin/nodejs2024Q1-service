@@ -1,22 +1,22 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Album, Artist, Track } from 'src/models';
 import { CreateArtistDto } from 'src/modules/artist/dto/create-artist.dto';
-import { AlbumEntity } from '../album/album.entity';
-import { TrackEntity } from '../track/track.entity';
-import { FavoritesEntity } from '../favorites/favorites.entity';
+import { AlbumRepository } from '../album/album.repository';
+import { TrackRepository } from '../track/track.repository';
+import { FavoritesRepository } from '../favorites/favorites.repository';
 
 @Injectable()
-export class ArtistEntity {
+export class ArtistRepository {
   private artist: Artist[] = [];
 
   constructor(
-    private readonly albumEntity: AlbumEntity,
+    private readonly albumRepository: AlbumRepository,
 
-    @Inject(forwardRef(() => TrackEntity))
-    private readonly trackEntity: TrackEntity,
+    @Inject(forwardRef(() => TrackRepository))
+    private readonly trackRepository: TrackRepository,
 
-    @Inject(forwardRef(() => FavoritesEntity))
-    private readonly favoritesEntity: FavoritesEntity,
+    @Inject(forwardRef(() => FavoritesRepository))
+    private readonly favoritesRepository: FavoritesRepository,
   ) {}
 
   create(createArtistDto: CreateArtistDto): Artist {
@@ -58,25 +58,25 @@ export class ArtistEntity {
       this.artist.splice(artistIndex, 1);
 
       // TODO: refactor using prisma
-      const artistAlbums: Album[] = this.albumEntity.findAllByArtistId(id);
+      const artistAlbums: Album[] = this.albumRepository.findAllByArtistId(id);
 
       artistAlbums.forEach((album) => {
-        this.albumEntity.update(album.id, {
+        this.albumRepository.update(album.id, {
           ...album,
           artistId: null,
         });
       });
 
-      const artistTracks: Track[] = this.trackEntity.findAllByArtistId(id);
+      const artistTracks: Track[] = this.trackRepository.findAllByArtistId(id);
 
       artistTracks.forEach((track) => {
-        this.trackEntity.update(track.id, {
+        this.trackRepository.update(track.id, {
           ...track,
           artistId: null,
         });
       });
 
-      this.favoritesEntity.deleteArtist(id);
+      this.favoritesRepository.deleteArtist(id);
 
       return;
     }

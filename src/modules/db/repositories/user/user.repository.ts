@@ -3,7 +3,7 @@ import { User } from 'src/models';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 
 @Injectable()
-export class UserEntity {
+export class UserRepository {
   private user: User[] = [];
 
   constructor() {}

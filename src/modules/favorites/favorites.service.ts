@@ -8,11 +8,11 @@ export class FavoritesService {
   constructor(private readonly dbService: DbService) {}
 
   findAll(): FavoritesResponse {
-    return this.dbService.favoritesEntity.findAll();
+    return this.dbService.favoritesRepository.findAll();
   }
 
   addTrack(id: string): string {
-    const track: Track = this.dbService.trackEntity.findOne(id);
+    const track: Track = this.dbService.trackRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!track) {
@@ -21,24 +21,24 @@ export class FavoritesService {
       );
     }
 
-    this.dbService.favoritesEntity.addTrack(id);
+    this.dbService.favoritesRepository.addTrack(id);
 
     return 'Track was added to favorites!';
   }
 
   deleteTrack(id: string): void {
     const isFavorite: boolean =
-      this.dbService.favoritesEntity.isFavoriteTrack(id);
+      this.dbService.favoritesRepository.isFavoriteTrack(id);
 
     if (!isFavorite) {
       throw new NotFoundError(`Track with id = ${id} is not favorite!`);
     }
 
-    this.dbService.favoritesEntity.deleteTrack(id);
+    this.dbService.favoritesRepository.deleteTrack(id);
   }
 
   addArtist(id: string): string {
-    const artist: Artist = this.dbService.artistEntity.findOne(id);
+    const artist: Artist = this.dbService.artistRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!artist) {
@@ -47,24 +47,24 @@ export class FavoritesService {
       );
     }
 
-    this.dbService.favoritesEntity.addArtist(id);
+    this.dbService.favoritesRepository.addArtist(id);
 
     return 'Artist was added to favorites!';
   }
 
   deleteArtist(id: string): void {
     const isFavorite: boolean =
-      this.dbService.favoritesEntity.isFavoriteArtist(id);
+      this.dbService.favoritesRepository.isFavoriteArtist(id);
 
     if (!isFavorite) {
       throw new NotFoundError(`Artist with id = ${id} is not favorite!`);
     }
 
-    this.dbService.favoritesEntity.deleteArtist(id);
+    this.dbService.favoritesRepository.deleteArtist(id);
   }
 
   addAlbum(id: string): string {
-    const album: Album = this.dbService.albumEntity.findOne(id);
+    const album: Album = this.dbService.albumRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!album) {
@@ -73,19 +73,19 @@ export class FavoritesService {
       );
     }
 
-    this.dbService.favoritesEntity.addAlbum(id);
+    this.dbService.favoritesRepository.addAlbum(id);
 
     return 'Album was added to favorites!';
   }
 
   deleteAlbum(id: string): void {
     const isFavorite: boolean =
-      this.dbService.favoritesEntity.isFavoriteAlbum(id);
+      this.dbService.favoritesRepository.isFavoriteAlbum(id);
 
     if (!isFavorite) {
       throw new NotFoundError(`Album with id = ${id} is not favorite!`);
     }
 
-    this.dbService.favoritesEntity.deleteAlbum(id);
+    this.dbService.favoritesRepository.deleteAlbum(id);
   }
 }
