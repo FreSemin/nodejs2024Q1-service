@@ -1,13 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Album, Artist, FavoritesResponse, Track } from 'src/models';
 import { FavoritesEntity } from '../db/entities/favorites/favorites.entity';
 import { TrackEntity } from '../db/entities/track/track.entity';
 import { AlbumEntity } from '../db/entities/album/album.entity';
 import { ArtistEntity } from '../db/entities/artist/artist.entity';
+import { NotFoundError, UnprocessableEntityError } from 'src/utils';
 
 @Injectable()
 export class FavoritesService {
@@ -27,7 +24,7 @@ export class FavoritesService {
 
     // TODO: refactor add strings to constants
     if (!track) {
-      throw new UnprocessableEntityException(
+      throw new UnprocessableEntityError(
         `Track with id = ${id} doesn't exists`,
       );
     }
@@ -41,7 +38,7 @@ export class FavoritesService {
     const isFavorite: boolean = this.favoritesEntity.isFavoriteTrack(id);
 
     if (!isFavorite) {
-      throw new NotFoundException(`Track with id = ${id} is not favorite!`);
+      throw new NotFoundError(`Track with id = ${id} is not favorite!`);
     }
 
     this.favoritesEntity.deleteTrack(id);
@@ -52,7 +49,7 @@ export class FavoritesService {
 
     // TODO: refactor add strings to constants
     if (!artist) {
-      throw new UnprocessableEntityException(
+      throw new UnprocessableEntityError(
         `Artist with id = ${id} doesn't exists`,
       );
     }
@@ -66,7 +63,7 @@ export class FavoritesService {
     const isFavorite: boolean = this.favoritesEntity.isFavoriteArtist(id);
 
     if (!isFavorite) {
-      throw new NotFoundException(`Artist with id = ${id} is not favorite!`);
+      throw new NotFoundError(`Artist with id = ${id} is not favorite!`);
     }
 
     this.favoritesEntity.deleteArtist(id);
@@ -77,7 +74,7 @@ export class FavoritesService {
 
     // TODO: refactor add strings to constants
     if (!album) {
-      throw new UnprocessableEntityException(
+      throw new UnprocessableEntityError(
         `Album with id = ${id} doesn't exists`,
       );
     }
@@ -91,7 +88,7 @@ export class FavoritesService {
     const isFavorite: boolean = this.favoritesEntity.isFavoriteAlbum(id);
 
     if (!isFavorite) {
-      throw new NotFoundException(`Album with id = ${id} is not favorite!`);
+      throw new NotFoundError(`Album with id = ${id} is not favorite!`);
     }
 
     this.favoritesEntity.deleteAlbum(id);
