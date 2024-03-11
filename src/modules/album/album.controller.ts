@@ -8,11 +8,13 @@ import {
   ParseUUIDPipe,
   HttpCode,
   Put,
+  NotFoundException,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { StatusCodes } from 'http-status-codes';
+import { NotFoundError } from 'src/utils';
 
 @Controller('album')
 export class AlbumController {
@@ -20,17 +22,37 @@ export class AlbumController {
 
   @Post()
   create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumService.create(createAlbumDto);
+    try {
+      return this.albumService.create(createAlbumDto);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Get()
   findAll() {
-    return this.albumService.findAll();
+    try {
+      return this.albumService.findAll();
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.albumService.findOne(id);
+    try {
+      return this.albumService.findOne(id);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Put(':id')
@@ -38,12 +60,28 @@ export class AlbumController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    return this.albumService.update(id, updateAlbumDto);
+    try {
+      return this.albumService.update(id, updateAlbumDto);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
   remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.albumService.remove(id);
+    try {
+      return this.albumService.remove(id);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 }
