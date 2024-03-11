@@ -8,7 +8,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/FreSemin/nodejs2024Q1-service
 ```
 
 ## Installing NPM modules
@@ -16,6 +16,12 @@ git clone {repository URL}
 ```
 npm install
 ```
+
+## Set up Environment variables
+
+1. Create `.env` file in the root folder
+2. Copy variables from `.env.example`
+3. Set up your values for variables if needed.
 
 ## Running application
 
