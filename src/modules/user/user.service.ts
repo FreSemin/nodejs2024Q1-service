@@ -1,12 +1,9 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from '../db/entities/user/user.entity';
 import { User } from 'src/models';
+import { ForbiddenError, NotFoundError } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -25,7 +22,7 @@ export class UserService {
 
     if (!user) {
       // TODO: add message to config or constants
-      throw new NotFoundException('User not found!');
+      throw new NotFoundError('User not found!');
     }
 
     return user;
@@ -36,7 +33,7 @@ export class UserService {
 
     if (updateUserDto.oldPassword !== user.password) {
       // TODO: add password message to config or constants
-      throw new ForbiddenException('Wrong password!');
+      throw new ForbiddenError('Wrong password!');
     }
 
     return this.userEntity.update(id, {
