@@ -28,17 +28,31 @@ export class TrackController {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
       }
+
+      throw err;
     }
   }
 
   @Get()
   findAll() {
-    return this.trackService.findAll();
+    try {
+      return this.trackService.findAll();
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.trackService.findOne(id);
+    try {
+      return this.trackService.findOne(id);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Put(':id')
@@ -46,12 +60,28 @@ export class TrackController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    return this.trackService.update(id, updateTrackDto);
+    try {
+      return this.trackService.update(id, updateTrackDto);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
   remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.trackService.remove(id);
+    try {
+      return this.trackService.remove(id);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from '../db/entities/track/track.entity';
@@ -48,7 +48,7 @@ export class TrackService {
 
     if (!track) {
       // TODO: add message to config or constants
-      throw new NotFoundException('Track not found!');
+      throw new NotFoundError('Track not found!');
     }
 
     return track;
