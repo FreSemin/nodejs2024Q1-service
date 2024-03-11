@@ -6,8 +6,6 @@ import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 export class UserRepository {
   private user: User[] = [];
 
-  constructor() {}
-
   create(createUserDto: CreateUserDto): User {
     const user: User = new User(createUserDto);
 
