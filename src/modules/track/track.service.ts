@@ -1,23 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { TrackEntity } from '../db/entities/track/track.entity';
 import { Album, Artist, Track } from 'src/models';
-import { ArtistEntity } from '../db/entities/artist/artist.entity';
 import { NotFoundError } from 'src/utils';
-import { AlbumEntity } from '../db/entities/album/album.entity';
+import { DbService } from '../db/db.service';
 
 @Injectable()
 export class TrackService {
-  constructor(
-    private readonly trackEntity: TrackEntity,
-    private readonly artistEntity: ArtistEntity,
-    private readonly albumEntity: AlbumEntity,
-  ) {}
+  constructor(private readonly dbService: DbService) {}
 
   create(createTrackDto: CreateTrackDto) {
     if (createTrackDto.artistId) {
-      const artist: Artist | null = this.artistEntity.findOne(
+      const artist: Artist | null = this.dbService.artistEntity.findOne(
         createTrackDto.artistId,
       );
 
@@ -27,7 +21,7 @@ export class TrackService {
     }
 
     if (createTrackDto.albumId) {
-      const album: Album | null = this.albumEntity.findOne(
+      const album: Album | null = this.dbService.albumEntity.findOne(
         createTrackDto.albumId,
       );
 
@@ -36,15 +30,15 @@ export class TrackService {
       }
     }
 
-    return this.trackEntity.create(createTrackDto);
+    return this.dbService.trackEntity.create(createTrackDto);
   }
 
   findAll(): Track[] {
-    return this.trackEntity.findAll();
+    return this.dbService.trackEntity.findAll();
   }
 
   findOne(id: string): Track {
-    const track: Track | null = this.trackEntity.findOne(id);
+    const track: Track | null = this.dbService.trackEntity.findOne(id);
 
     if (!track) {
       // TODO: add message to config or constants
@@ -58,7 +52,7 @@ export class TrackService {
     const track: Track = this.findOne(id);
 
     if (updateTrackDto.artistId) {
-      const artist: Artist | null = this.artistEntity.findOne(
+      const artist: Artist | null = this.dbService.artistEntity.findOne(
         updateTrackDto.artistId,
       );
 
@@ -68,7 +62,7 @@ export class TrackService {
     }
 
     if (updateTrackDto.albumId) {
-      const album: Album | null = this.albumEntity.findOne(
+      const album: Album | null = this.dbService.albumEntity.findOne(
         updateTrackDto.albumId,
       );
 
@@ -77,7 +71,7 @@ export class TrackService {
       }
     }
 
-    return this.trackEntity.update(id, {
+    return this.dbService.trackEntity.update(id, {
       ...track,
       ...updateTrackDto,
     });
@@ -86,6 +80,6 @@ export class TrackService {
   remove(id: string) {
     this.findOne(id);
 
-    this.trackEntity.remove(id);
+    this.dbService.trackEntity.remove(id);
   }
 }

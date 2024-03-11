@@ -1,26 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Album, Artist, FavoritesResponse, Track } from 'src/models';
-import { FavoritesEntity } from '../db/entities/favorites/favorites.entity';
-import { TrackEntity } from '../db/entities/track/track.entity';
-import { AlbumEntity } from '../db/entities/album/album.entity';
-import { ArtistEntity } from '../db/entities/artist/artist.entity';
 import { NotFoundError, UnprocessableEntityError } from 'src/utils';
+import { DbService } from '../db/db.service';
 
 @Injectable()
 export class FavoritesService {
-  constructor(
-    private readonly favoritesEntity: FavoritesEntity,
-    private readonly artistEntity: ArtistEntity,
-    private readonly trackEntity: TrackEntity,
-    private readonly albumEntity: AlbumEntity,
-  ) {}
+  constructor(private readonly dbService: DbService) {}
 
   findAll(): FavoritesResponse {
-    return this.favoritesEntity.findAll();
+    return this.dbService.favoritesEntity.findAll();
   }
 
   addTrack(id: string): string {
-    const track: Track = this.trackEntity.findOne(id);
+    const track: Track = this.dbService.trackEntity.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!track) {
@@ -29,23 +21,24 @@ export class FavoritesService {
       );
     }
 
-    this.favoritesEntity.addTrack(id);
+    this.dbService.favoritesEntity.addTrack(id);
 
     return 'Track was added to favorites!';
   }
 
   deleteTrack(id: string): void {
-    const isFavorite: boolean = this.favoritesEntity.isFavoriteTrack(id);
+    const isFavorite: boolean =
+      this.dbService.favoritesEntity.isFavoriteTrack(id);
 
     if (!isFavorite) {
       throw new NotFoundError(`Track with id = ${id} is not favorite!`);
     }
 
-    this.favoritesEntity.deleteTrack(id);
+    this.dbService.favoritesEntity.deleteTrack(id);
   }
 
   addArtist(id: string): string {
-    const artist: Artist = this.artistEntity.findOne(id);
+    const artist: Artist = this.dbService.artistEntity.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!artist) {
@@ -54,23 +47,24 @@ export class FavoritesService {
       );
     }
 
-    this.favoritesEntity.addArtist(id);
+    this.dbService.favoritesEntity.addArtist(id);
 
     return 'Artist was added to favorites!';
   }
 
   deleteArtist(id: string): void {
-    const isFavorite: boolean = this.favoritesEntity.isFavoriteArtist(id);
+    const isFavorite: boolean =
+      this.dbService.favoritesEntity.isFavoriteArtist(id);
 
     if (!isFavorite) {
       throw new NotFoundError(`Artist with id = ${id} is not favorite!`);
     }
 
-    this.favoritesEntity.deleteArtist(id);
+    this.dbService.favoritesEntity.deleteArtist(id);
   }
 
   addAlbum(id: string): string {
-    const album: Album = this.albumEntity.findOne(id);
+    const album: Album = this.dbService.albumEntity.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!album) {
@@ -79,18 +73,19 @@ export class FavoritesService {
       );
     }
 
-    this.favoritesEntity.addAlbum(id);
+    this.dbService.favoritesEntity.addAlbum(id);
 
     return 'Album was added to favorites!';
   }
 
   deleteAlbum(id: string): void {
-    const isFavorite: boolean = this.favoritesEntity.isFavoriteAlbum(id);
+    const isFavorite: boolean =
+      this.dbService.favoritesEntity.isFavoriteAlbum(id);
 
     if (!isFavorite) {
       throw new NotFoundError(`Album with id = ${id} is not favorite!`);
     }
 
-    this.favoritesEntity.deleteAlbum(id);
+    this.dbService.favoritesEntity.deleteAlbum(id);
   }
 }

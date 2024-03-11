@@ -11,6 +11,8 @@ export class ArtistEntity {
 
   constructor(
     private readonly albumEntity: AlbumEntity,
+
+    @Inject(forwardRef(() => TrackEntity))
     private readonly trackEntity: TrackEntity,
 
     @Inject(forwardRef(() => FavoritesEntity))

@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from '../db/entities/user/user.entity';
 import { User } from 'src/models';
 import { ForbiddenError, NotFoundError } from 'src/utils';
+import { DbService } from '../db/db.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userEntity: UserEntity) {}
+  constructor(private readonly dbService: DbService) {}
 
   create(createUserDto: CreateUserDto): User {
-    return this.userEntity.create(createUserDto);
+    return this.dbService.userEntity.create(createUserDto);
   }
 
   findAll(): User[] {
-    return this.userEntity.findAll();
+    return this.dbService.userEntity.findAll();
   }
 
   findOne(id: string): User {
-    const user: User | null = this.userEntity.findOne(id);
+    const user: User | null = this.dbService.userEntity.findOne(id);
 
     if (!user) {
       // TODO: add message to config or constants
@@ -36,7 +36,7 @@ export class UserService {
       throw new ForbiddenError('Wrong password!');
     }
 
-    return this.userEntity.update(id, {
+    return this.dbService.userEntity.update(id, {
       ...user,
       password: updateUserDto.newPassword,
     });
@@ -45,6 +45,6 @@ export class UserService {
   remove(id: string) {
     this.findOne(id);
 
-    this.userEntity.remove(id);
+    this.dbService.userEntity.remove(id);
   }
 }
