@@ -57,6 +57,26 @@ export class TrackService {
   update(id: string, updateTrackDto: UpdateTrackDto): Track {
     const track: Track = this.findOne(id);
 
+    if (updateTrackDto.artistId) {
+      const artist: Artist | null = this.artistEntity.findOne(
+        updateTrackDto.artistId,
+      );
+
+      if (!artist) {
+        throw new NotFoundError('Artist not found!');
+      }
+    }
+
+    if (updateTrackDto.albumId) {
+      const album: Album | null = this.albumEntity.findOne(
+        updateTrackDto.albumId,
+      );
+
+      if (!album) {
+        throw new NotFoundError('Album not found!');
+      }
+    }
+
     return this.trackEntity.update(id, {
       ...track,
       ...updateTrackDto,
