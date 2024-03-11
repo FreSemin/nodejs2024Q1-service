@@ -8,11 +8,13 @@ import {
   Put,
   ParseUUIDPipe,
   HttpCode,
+  NotFoundException,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { StatusCodes } from 'http-status-codes';
+import { NotFoundError } from 'src/utils';
 
 @Controller('track')
 export class TrackController {
@@ -20,7 +22,13 @@ export class TrackController {
 
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
-    return this.trackService.create(createTrackDto);
+    try {
+      return this.trackService.create(createTrackDto);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+    }
   }
 
   @Get()

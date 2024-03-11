@@ -2,15 +2,39 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from '../db/entities/track/track.entity';
-import { Track } from 'src/models';
+import { Album, Artist, Track } from 'src/models';
+import { ArtistEntity } from '../db/entities/artist/artist.entity';
+import { NotFoundError } from 'src/utils';
+import { AlbumEntity } from '../db/entities/album/album.entity';
 
 @Injectable()
 export class TrackService {
-  constructor(private readonly trackEntity: TrackEntity) {}
+  constructor(
+    private readonly trackEntity: TrackEntity,
+    private readonly artistEntity: ArtistEntity,
+    private readonly albumEntity: AlbumEntity,
+  ) {}
 
   create(createTrackDto: CreateTrackDto) {
-    // TODO: check is artist exist
-    // TODO: check is album exist
+    if (createTrackDto.artistId) {
+      const artist: Artist | null = this.artistEntity.findOne(
+        createTrackDto.artistId,
+      );
+
+      if (!artist) {
+        throw new NotFoundError('Artist not found!');
+      }
+    }
+
+    if (createTrackDto.albumId) {
+      const album: Album | null = this.albumEntity.findOne(
+        createTrackDto.albumId,
+      );
+
+      if (!album) {
+        throw new NotFoundError('Album not found!');
+      }
+    }
 
     return this.trackEntity.create(createTrackDto);
   }
