@@ -8,11 +8,13 @@ import {
   ParseUUIDPipe,
   HttpCode,
   Put,
+  NotFoundException,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { StatusCodes } from 'http-status-codes';
+import { NotFoundError } from 'src/utils';
 
 @Controller('artist')
 export class ArtistController {
@@ -20,17 +22,33 @@ export class ArtistController {
 
   @Post()
   create(@Body() createArtistDto: CreateArtistDto) {
-    return this.artistService.create(createArtistDto);
+    try {
+      return this.artistService.create(createArtistDto);
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get()
   findAll() {
-    return this.artistService.findAll();
+    try {
+      return this.artistService.findAll();
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.artistService.findOne(id);
+    try {
+      return this.artistService.findOne(id);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Put(':id')
@@ -38,12 +56,28 @@ export class ArtistController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    return this.artistService.update(id, updateArtistDto);
+    try {
+      return this.artistService.update(id, updateArtistDto);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
   remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.artistService.remove(id);
+    try {
+      return this.artistService.remove(id);
+    } catch (err) {
+      if (err instanceof NotFoundError) {
+        throw new NotFoundException(err.message);
+      }
+
+      throw err;
+    }
   }
 }

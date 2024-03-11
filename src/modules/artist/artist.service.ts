@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from '../db/entities/artist/artist.entity';
 import { Artist } from 'src/models';
+import { NotFoundError } from 'src/utils';
 
 @Injectable()
 export class ArtistService {
@@ -21,7 +22,7 @@ export class ArtistService {
 
     if (!artist) {
       // TODO: add message to config or constants
-      throw new NotFoundException('Artist not found!');
+      throw new NotFoundError('Artist not found!');
     }
 
     return artist;
