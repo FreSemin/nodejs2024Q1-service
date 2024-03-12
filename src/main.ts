@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule } from '@nestjs/swagger';
 import { readFileSync } from 'fs';
-import * as yaml from 'js-yaml';
+import * as YAML from 'yaml';
 
 // TODO: refactor
 async function bootstrap() {
@@ -17,7 +17,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const swaggerDoc = yaml.load(
+  const swaggerDoc = YAML.parse(
     readFileSync('doc/api.yaml', { encoding: 'utf-8' }),
   );
 
