@@ -1,9 +1,10 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Album, Artist, Track } from 'src/models';
+import { Album, Artist } from 'src/models';
 import { CreateArtistDto } from 'src/modules/artist/dto/create-artist.dto';
 import { AlbumRepository } from '../album/album.repository';
 import { TrackRepository } from '../track/track.repository';
 import { FavoritesRepository } from '../favorites/favorites.repository';
+import { TrackEntity } from 'src/modules/track/entity/track.entity';
 
 @Injectable()
 export class ArtistRepository {
@@ -67,7 +68,8 @@ export class ArtistRepository {
         });
       });
 
-      const artistTracks: Track[] = this.trackRepository.findAllByArtistId(id);
+      const artistTracks: TrackEntity[] =
+        this.trackRepository.findAllByArtistId(id);
 
       artistTracks.forEach((track) => {
         this.trackRepository.update(track.id, {

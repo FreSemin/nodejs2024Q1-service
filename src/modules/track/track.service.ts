@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Album, Artist, Track } from 'src/models';
+import { Album, Artist } from 'src/models';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
+import { TrackEntity } from './entity/track.entity';
 
 @Injectable()
 export class TrackService {
@@ -33,12 +34,13 @@ export class TrackService {
     return this.dbService.trackRepository.create(createTrackDto);
   }
 
-  findAll(): Track[] {
+  findAll(): TrackEntity[] {
     return this.dbService.trackRepository.findAll();
   }
 
-  findOne(id: string): Track {
-    const track: Track | null = this.dbService.trackRepository.findOne(id);
+  findOne(id: string): TrackEntity {
+    const track: TrackEntity | null =
+      this.dbService.trackRepository.findOne(id);
 
     if (!track) {
       // TODO: add message to config or constants
@@ -48,8 +50,8 @@ export class TrackService {
     return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto): Track {
-    const track: Track = this.findOne(id);
+  update(id: string, updateTrackDto: UpdateTrackDto): TrackEntity {
+    const track: TrackEntity = this.findOne(id);
 
     if (updateTrackDto.artistId) {
       const artist: Artist | null = this.dbService.artistRepository.findOne(

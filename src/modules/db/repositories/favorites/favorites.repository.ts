@@ -1,8 +1,9 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Album, Artist, Favorites, FavoritesResponse, Track } from 'src/models';
+import { Album, Artist, Favorites, FavoritesResponse } from 'src/models';
 import { TrackRepository } from '../track/track.repository';
 import { ArtistRepository } from '../artist/artist.repository';
 import { AlbumRepository } from '../album/album.repository';
+import { TrackEntity } from 'src/modules/track/entity/track.entity';
 
 @Injectable()
 export class FavoritesRepository {
@@ -25,7 +26,7 @@ export class FavoritesRepository {
       return this.artistRepository.findOne(artistId);
     });
 
-    const tracks: Track[] = this.favorites.tracks.map((trackId) => {
+    const tracks: TrackEntity[] = this.favorites.tracks.map((trackId) => {
       return this.trackRepository.findOne(trackId);
     });
 

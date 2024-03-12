@@ -1,7 +1,6 @@
+import { TrackEntity } from 'src/modules/track/entity/track.entity';
 import { Album } from '../album/album.models';
 import { Artist } from '../artist/artist.models';
-import { Track } from '../track/track.models';
-
 export interface IFavorites {
   artists: string[];
   albums: string[];
@@ -21,13 +20,13 @@ export class Favorites implements IFavorites {
 export interface IFavoritesResponse {
   artists: Artist[];
   albums: Album[];
-  tracks: Track[];
+  tracks: TrackEntity[];
 }
 
 export class FavoritesResponse implements IFavoritesResponse {
   artists: Artist[] = [];
   albums: Album[] = [];
-  tracks: Track[] = [];
+  tracks: TrackEntity[] = [];
 
   constructor(favoritesResponse: Partial<IFavoritesResponse>) {
     Object.assign(this, favoritesResponse);

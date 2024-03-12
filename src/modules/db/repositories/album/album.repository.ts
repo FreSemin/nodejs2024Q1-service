@@ -1,8 +1,9 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Album, Track } from 'src/models';
+import { Album } from 'src/models';
 import { CreateAlbumDto } from 'src/modules/album/dto/create-album.dto';
 import { FavoritesRepository } from '../favorites/favorites.repository';
 import { TrackRepository } from '../track/track.repository';
+import { TrackEntity } from 'src/modules/track/entity/track.entity';
 
 @Injectable()
 export class AlbumRepository {
@@ -54,7 +55,8 @@ export class AlbumRepository {
     if (albumIndex !== -1) {
       this.album.splice(albumIndex, 1);
 
-      const albumTracks: Track[] = this.trackRepository.findAllByAlbumId(id);
+      const albumTracks: TrackEntity[] =
+        this.trackRepository.findAllByAlbumId(id);
 
       // TODO: refactor using Prisma
       albumTracks.forEach((track) => {
