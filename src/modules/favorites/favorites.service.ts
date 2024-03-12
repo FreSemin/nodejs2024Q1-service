@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { FavoritesResponse } from 'src/models';
 import { NotFoundError, UnprocessableEntityError } from 'src/utils';
 import { DbService } from '../db/db.service';
 import { TrackEntity } from '../track/entity/track.entity';
 import { ArtistEntity } from '../artist/entity/artist.entity';
 import { AlbumEntity } from '../album/entity/album.entity';
+import { FavoritesResponseEntity } from './entity/favorites.entity';
 
 @Injectable()
 export class FavoritesService {
   constructor(private readonly dbService: DbService) {}
 
-  findAll(): FavoritesResponse {
+  findAll(): FavoritesResponseEntity {
     return this.dbService.favoritesRepository.findAll();
   }
 
