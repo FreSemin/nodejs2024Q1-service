@@ -1,32 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/models';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { UserEntity } from 'src/modules/user/entity/user.entity';
 
 @Injectable()
 export class UserRepository {
-  private user: User[] = [];
+  private user: UserEntity[] = [];
 
-  create(createUserDto: CreateUserDto): User {
-    const user: User = new User(createUserDto);
+  create(createUserDto: CreateUserDto): UserEntity {
+    const user: UserEntity = new UserEntity(createUserDto);
 
     this.user.push(user);
 
     return user;
   }
 
-  findAll(): User[] {
+  findAll(): UserEntity[] {
     return this.user;
   }
 
-  findOne(id: string): User | null {
+  findOne(id: string): UserEntity | null {
     return this.user.find((user) => user.id === id) || null;
   }
 
-  update(id: string, updatedUser: User): User | null {
+  update(id: string, updatedUser: UserEntity): UserEntity | null {
     const userIndex: number = this.user.findIndex((user) => user.id === id);
 
     if (userIndex !== -1) {
-      this.user[userIndex] = new User(updatedUser);
+      this.user[userIndex] = new UserEntity(updatedUser);
 
       return this.user[userIndex];
     }

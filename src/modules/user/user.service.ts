@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from 'src/models';
 import { ForbiddenError, NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
+import { UserEntity } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(private readonly dbService: DbService) {}
 
-  create(createUserDto: CreateUserDto): User {
+  create(createUserDto: CreateUserDto): UserEntity {
     return this.dbService.userRepository.create(createUserDto);
   }
 
-  findAll(): User[] {
+  findAll(): UserEntity[] {
     return this.dbService.userRepository.findAll();
   }
 
-  findOne(id: string): User {
-    const user: User | null = this.dbService.userRepository.findOne(id);
+  findOne(id: string): UserEntity {
+    const user: UserEntity | null = this.dbService.userRepository.findOne(id);
 
     if (!user) {
       // TODO: add message to config or constants
@@ -28,8 +28,8 @@ export class UserService {
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): User {
-    const user: User = this.findOne(id);
+  update(id: string, updateUserDto: UpdateUserDto): UserEntity {
+    const user: UserEntity = this.findOne(id);
 
     if (updateUserDto.oldPassword !== user.password) {
       // TODO: add password message to config or constants

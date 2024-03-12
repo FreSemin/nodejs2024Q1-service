@@ -1,16 +1,8 @@
 import { Exclude } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from '../interface/user.interface';
 
-export interface IUser {
-  id: string;
-  login: string;
-  password: string;
-  version: number;
-  createdAt: number;
-  updatedAt: number;
-}
-
-export class User implements IUser {
+export class UserEntity implements User {
   id: string = uuidv4();
 
   login: string;
@@ -24,7 +16,7 @@ export class User implements IUser {
 
   updatedAt: number;
 
-  constructor(user: Partial<IUser>) {
+  constructor(user: Partial<User>) {
     Object.assign(this, user);
 
     this.version += 1;
