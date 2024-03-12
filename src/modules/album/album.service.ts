@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from 'src/models';
+import { AlbumEntity } from './entity/album.entity';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
 import { ArtistEntity } from '../artist/entity/artist.entity';
@@ -28,7 +28,8 @@ export class AlbumService {
   }
 
   findOne(id: string) {
-    const album: Album | null = this.dbService.albumRepository.findOne(id);
+    const album: AlbumEntity | null =
+      this.dbService.albumRepository.findOne(id);
 
     if (!album) {
       // TODO: add message to config or constants
@@ -39,7 +40,7 @@ export class AlbumService {
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album: Album = this.findOne(id);
+    const album: AlbumEntity = this.findOne(id);
 
     if (updateAlbumDto.artistId) {
       const artist: ArtistEntity | null =

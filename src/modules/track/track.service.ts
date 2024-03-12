@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Album } from 'src/models';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
 import { TrackEntity } from './entity/track.entity';
 import { ArtistEntity } from '../artist/entity/artist.entity';
+import { AlbumEntity } from '../album/entity/album.entity';
 
 @Injectable()
 export class TrackService {
@@ -22,7 +22,7 @@ export class TrackService {
     }
 
     if (createTrackDto.albumId) {
-      const album: Album | null = this.dbService.albumRepository.findOne(
+      const album: AlbumEntity | null = this.dbService.albumRepository.findOne(
         createTrackDto.albumId,
       );
 
@@ -63,7 +63,7 @@ export class TrackService {
     }
 
     if (updateTrackDto.albumId) {
-      const album: Album | null = this.dbService.albumRepository.findOne(
+      const album: AlbumEntity | null = this.dbService.albumRepository.findOne(
         updateTrackDto.albumId,
       );
 

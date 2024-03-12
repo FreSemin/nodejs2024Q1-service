@@ -1,5 +1,5 @@
 import { TrackEntity } from 'src/modules/track/entity/track.entity';
-import { Album } from '../album/album.models';
+import { AlbumEntity } from 'src/modules/album/entity/album.entity';
 import { ArtistEntity } from 'src/modules/artist/entity/artist.entity';
 export interface IFavorites {
   artists: string[];
@@ -19,13 +19,13 @@ export class Favorites implements IFavorites {
 
 export interface IFavoritesResponse {
   artists: ArtistEntity[];
-  albums: Album[];
+  albums: AlbumEntity[];
   tracks: TrackEntity[];
 }
 
 export class FavoritesResponse implements IFavoritesResponse {
   artists: ArtistEntity[] = [];
-  albums: Album[] = [];
+  albums: AlbumEntity[] = [];
   tracks: TrackEntity[] = [];
 
   constructor(favoritesResponse: Partial<IFavoritesResponse>) {

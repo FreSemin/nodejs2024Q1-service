@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Album, FavoritesResponse } from 'src/models';
+import { FavoritesResponse } from 'src/models';
 import { NotFoundError, UnprocessableEntityError } from 'src/utils';
 import { DbService } from '../db/db.service';
 import { TrackEntity } from '../track/entity/track.entity';
 import { ArtistEntity } from '../artist/entity/artist.entity';
+import { AlbumEntity } from '../album/entity/album.entity';
 
 @Injectable()
 export class FavoritesService {
@@ -66,7 +67,7 @@ export class FavoritesService {
   }
 
   addAlbum(id: string): string {
-    const album: Album = this.dbService.albumRepository.findOne(id);
+    const album: AlbumEntity = this.dbService.albumRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!album) {
