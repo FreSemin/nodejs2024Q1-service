@@ -1,9 +1,10 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Album, Artist, Favorites, FavoritesResponse } from 'src/models';
+import { Album, Favorites, FavoritesResponse } from 'src/models';
 import { TrackRepository } from '../track/track.repository';
 import { ArtistRepository } from '../artist/artist.repository';
 import { AlbumRepository } from '../album/album.repository';
 import { TrackEntity } from 'src/modules/track/entity/track.entity';
+import { ArtistEntity } from 'src/modules/artist/entity/artist.entity';
 
 @Injectable()
 export class FavoritesRepository {
@@ -22,7 +23,7 @@ export class FavoritesRepository {
 
   findAll(): FavoritesResponse {
     // TODO: refactor using Prisma
-    const artists: Artist[] = this.favorites.artists.map((artistId) => {
+    const artists: ArtistEntity[] = this.favorites.artists.map((artistId) => {
       return this.artistRepository.findOne(artistId);
     });
 

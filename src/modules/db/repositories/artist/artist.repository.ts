@@ -1,14 +1,15 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Album, Artist } from 'src/models';
+import { Album } from 'src/models';
 import { CreateArtistDto } from 'src/modules/artist/dto/create-artist.dto';
 import { AlbumRepository } from '../album/album.repository';
 import { TrackRepository } from '../track/track.repository';
 import { FavoritesRepository } from '../favorites/favorites.repository';
 import { TrackEntity } from 'src/modules/track/entity/track.entity';
+import { ArtistEntity } from 'src/modules/artist/entity/artist.entity';
 
 @Injectable()
 export class ArtistRepository {
-  private artist: Artist[] = [];
+  private artist: ArtistEntity[] = [];
 
   constructor(
     private readonly albumRepository: AlbumRepository,
@@ -20,29 +21,29 @@ export class ArtistRepository {
     private readonly favoritesRepository: FavoritesRepository,
   ) {}
 
-  create(createArtistDto: CreateArtistDto): Artist {
-    const artist: Artist = new Artist(createArtistDto);
+  create(createArtistDto: CreateArtistDto): ArtistEntity {
+    const artist: ArtistEntity = new ArtistEntity(createArtistDto);
 
     this.artist.push(artist);
 
     return artist;
   }
 
-  findAll(): Artist[] {
+  findAll(): ArtistEntity[] {
     return this.artist;
   }
 
-  findOne(id: string): Artist | null {
+  findOne(id: string): ArtistEntity | null {
     return this.artist.find((artist) => artist.id === id) || null;
   }
 
-  update(id: string, updatedArtist: Artist): Artist | null {
+  update(id: string, updatedArtist: ArtistEntity): ArtistEntity | null {
     const artistIndex: number = this.artist.findIndex(
       (artist) => artist.id === id,
     );
 
     if (artistIndex !== -1) {
-      this.artist[artistIndex] = new Artist(updatedArtist);
+      this.artist[artistIndex] = new ArtistEntity(updatedArtist);
 
       return this.artist[artistIndex];
     }

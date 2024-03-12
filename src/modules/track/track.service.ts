@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Album, Artist } from 'src/models';
+import { Album } from 'src/models';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
 import { TrackEntity } from './entity/track.entity';
+import { ArtistEntity } from '../artist/entity/artist.entity';
 
 @Injectable()
 export class TrackService {
@@ -12,9 +13,8 @@ export class TrackService {
 
   create(createTrackDto: CreateTrackDto) {
     if (createTrackDto.artistId) {
-      const artist: Artist | null = this.dbService.artistRepository.findOne(
-        createTrackDto.artistId,
-      );
+      const artist: ArtistEntity | null =
+        this.dbService.artistRepository.findOne(createTrackDto.artistId);
 
       if (!artist) {
         throw new NotFoundError('Artist not found!');
@@ -54,9 +54,8 @@ export class TrackService {
     const track: TrackEntity = this.findOne(id);
 
     if (updateTrackDto.artistId) {
-      const artist: Artist | null = this.dbService.artistRepository.findOne(
-        updateTrackDto.artistId,
-      );
+      const artist: ArtistEntity | null =
+        this.dbService.artistRepository.findOne(updateTrackDto.artistId);
 
       if (!artist) {
         throw new NotFoundError('Artist not found!');
