@@ -23,7 +23,7 @@ model User {
   id        String @id @default(uuid()) @db.Uuid
   login     String
   password  String
-  version   Int    @default(0)
+  version   Int    @default(1)
   createdAt BigInt @map("created_at")
   updatedAt BigInt @map("updated_at")
 
