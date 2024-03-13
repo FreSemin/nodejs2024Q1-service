@@ -21,6 +21,8 @@ export class UserEntity implements User {
 
     this.version += 1;
 
+    // TODO
+    // Ref delete update, db do it
     this.updatedAt = Date.now();
   }
 }
