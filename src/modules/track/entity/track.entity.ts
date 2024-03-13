@@ -10,7 +10,7 @@ export class TrackEntity implements Track {
 
   albumId: string | null = null;
 
-  duration: number;
+  duration: number = 0;
 
   constructor(track: Partial<Track>) {
     Object.assign(this, track);
