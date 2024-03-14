@@ -13,12 +13,6 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-enum FavoriteType {
-  ARTIST
-  ALBUM
-  TRACK
-}
-
 model User {
   id        String @id @default(uuid()) @db.Uuid
   login     String
@@ -31,42 +25,61 @@ model User {
 }
 
 model Artist {
-  id     String  @id @default(uuid()) @db.Uuid
-  name   String
-  grammy Boolean @default(false)
-  Album  Album[]
-  Track  Track[]
+  id               String             @id @default(uuid()) @db.Uuid
+  name             String
+  grammy           Boolean            @default(false)
+  Album            Album[]
+  Track            Track[]
+  FavoritesArtists FavoritesArtists[]
 
   @@map("artists")
 }
 
 model Album {
-  id       String  @id @default(uuid()) @db.Uuid
-  name     String
-  year     Int
-  artist   Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
-  artistId String? @map("artist_id") @db.Uuid
-  Track    Track[]
+  id              String            @id @default(uuid()) @db.Uuid
+  name            String
+  year            Int
+  artist          Artist?           @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId        String?           @map("artist_id") @db.Uuid
+  Track           Track[]
+  FavoritesAlbums FavoritesAlbums[]
 
   @@map("albums")
 }
 
 model Track {
-  id       String  @id @default(uuid()) @db.Uuid
-  name     String
-  duration Int     @default(0)
-  artist   Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
-  artistId String? @map("artist_id") @db.Uuid
-  album    Album?  @relation(fields: [albumId], references: [id], onDelete: SetNull)
-  albumId  String? @map("album_id") @db.Uuid
+  id              String            @id @default(uuid()) @db.Uuid
+  name            String
+  duration        Int               @default(0)
+  artist          Artist?           @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId        String?           @map("artist_id") @db.Uuid
+  album           Album?            @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  albumId         String?           @map("album_id") @db.Uuid
+  FavoritesTracks FavoritesTracks[]
 
   @@map("tracks")
 }
 
-model Favorites {
-  id       String       @id @default(uuid()) @db.Uuid
-  entityId String       @map("entity_id") @db.Uuid
-  type     FavoriteType
+model FavoritesArtists {
+  id       String @id @default(uuid()) @db.Uuid
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  artistId String @db.Uuid
 
-  @@map("favorites")
+  @@map("favorites_artists")
+}
+
+model FavoritesAlbums {
+  id      String @id @default(uuid()) @db.Uuid
+  album   Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String @db.Uuid
+
+  @@map("favorites_albums")
+}
+
+model FavoritesTracks {
+  id      String @id @default(uuid()) @db.Uuid
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String @db.Uuid
+
+  @@map("favorites_tracks")
 }
