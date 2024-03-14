@@ -25,18 +25,18 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
-      return this.userService.create(createUserDto);
+      return await this.userService.create(createUserDto);
     } catch (err) {
       throw err;
     }
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      return this.userService.findAll();
+      return await this.userService.findAll();
     } catch (err) {
       throw err;
     }
@@ -44,9 +44,9 @@ export class UserController {
 
   // TODO: refactor using get uuid version from config
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.userService.findOne(id);
+      return await this.userService.findOne(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -56,12 +56,12 @@ export class UserController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     try {
-      return this.userService.update(id, updateUserDto);
+      return await this.userService.update(id, updateUserDto);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -78,9 +78,9 @@ export class UserController {
   // TODO: add code to config or constants
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.userService.remove(id);
+      return await this.userService.remove(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);

@@ -4,47 +4,54 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ForbiddenError, NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
 import { UserEntity } from './entity/user.entity';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
   constructor(private readonly dbService: DbService) {}
 
-  create(createUserDto: CreateUserDto): UserEntity {
-    return this.dbService.userRepository.create(createUserDto);
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    return new UserEntity(
+      await this.dbService.userRepository.create(createUserDto),
+    );
   }
 
-  findAll(): UserEntity[] {
-    return this.dbService.userRepository.findAll();
+  async findAll(): Promise<UserEntity[]> {
+    return (await this.dbService.userRepository.findAll()).map(
+      (user: User) => new UserEntity(user),
+    );
   }
 
-  findOne(id: string): UserEntity {
-    const user: UserEntity | null = this.dbService.userRepository.findOne(id);
+  async findOne(id: string): Promise<UserEntity> {
+    const user: User | null = await this.dbService.userRepository.findOne(id);
 
     if (!user) {
       // TODO: add message to config or constants
       throw new NotFoundError('User not found!');
     }
 
-    return user;
+    return new UserEntity(user);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): UserEntity {
-    const user: UserEntity = this.findOne(id);
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user: UserEntity = await this.findOne(id);
 
     if (updateUserDto.oldPassword !== user.password) {
       // TODO: add password message to config or constants
       throw new ForbiddenError('Wrong password!');
     }
 
-    return this.dbService.userRepository.update(id, {
-      ...user,
-      password: updateUserDto.newPassword,
-    });
+    return new UserEntity(
+      await this.dbService.userRepository.update(id, {
+        ...user,
+        password: updateUserDto.newPassword,
+      }),
+    );
   }
 
-  remove(id: string) {
-    this.findOne(id);
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
 
-    this.dbService.userRepository.remove(id);
+    await this.dbService.userRepository.remove(id);
   }
 }
