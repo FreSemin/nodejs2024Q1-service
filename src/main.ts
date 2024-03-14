@@ -18,7 +18,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const swaggerDoc = YAML.parse(
-    readFileSync('doc/api.yaml', { encoding: 'utf-8' }),
+    readFileSync('./doc/api.yaml', { encoding: 'utf-8' }),
   );
 
   SwaggerModule.setup('doc', app, swaggerDoc);
