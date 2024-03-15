@@ -26,6 +26,26 @@ services:
       timeout: 5s
       retries: 5
 
+  music-service-api:
+    container_name: music-serivce-api
+    build:
+      context: .
+      dockerfile: ./docker/api.dockerfile
+      target: '${NODE_ENV}'
+    restart: unless-stopped
+    depends_on:
+      music-service-db:
+        condition: service_started
+    networks:
+      - music-service-network
+    ports:
+      - '${PORT:-4000}:4000'
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app/api
+      - /usr/src/app/api/node_modules
+
 volumes:
   music-service-db-data:
 
