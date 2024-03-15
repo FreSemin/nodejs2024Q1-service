@@ -1,74 +1,41 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from 'src/modules/album/dto/create-album.dto';
-import { FavoritesRepository } from '../favorites/favorites.repository';
-import { TrackRepository } from '../track/track.repository';
-import { TrackEntity } from 'src/modules/track/entity/track.entity';
-import { AlbumEntity } from 'src/modules/album/entity/album.entity';
+import { Album, PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class AlbumRepository {
-  private album: AlbumEntity[] = [];
-
-  constructor(
-    @Inject(forwardRef(() => FavoritesRepository))
-    private readonly favoritesRepository: FavoritesRepository,
-
-    @Inject(forwardRef(() => TrackRepository))
-    private readonly trackRepository: TrackRepository,
-  ) {}
-
-  create(createAlbumDto: CreateAlbumDto): AlbumEntity {
-    const album: AlbumEntity = new AlbumEntity(createAlbumDto);
-
-    this.album.push(album);
-
-    return album;
+export class AlbumRepository extends PrismaClient {
+  async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
+    return await this.album.create({
+      data: {
+        ...createAlbumDto,
+      },
+    });
   }
 
-  findAll(): AlbumEntity[] {
-    return this.album;
+  async findAll(): Promise<Album[]> {
+    return await this.album.findMany();
   }
 
-  findOne(id: string): AlbumEntity | null {
-    return this.album.find((album) => album.id === id) || null;
+  async findOne(id: string): Promise<Album | null> {
+    return (await this.album.findFirst({ where: { id } })) || null;
   }
 
-  findAllByArtistId(id: string): AlbumEntity[] {
-    return this.album.filter((album) => album.artistId === id);
+  async update(id: string, updatedAlbum: Album): Promise<Album | null> {
+    return await this.album.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updatedAlbum,
+      },
+    });
   }
 
-  update(id: string, updatedAlbum: AlbumEntity): AlbumEntity | null {
-    const albumIndex: number = this.album.findIndex((album) => album.id === id);
-
-    if (albumIndex !== -1) {
-      this.album[albumIndex] = new AlbumEntity(updatedAlbum);
-
-      return this.album[albumIndex];
-    }
-
-    return null;
-  }
-
-  remove(id: string): void {
-    const albumIndex: number = this.album.findIndex((album) => album.id === id);
-
-    if (albumIndex !== -1) {
-      this.album.splice(albumIndex, 1);
-
-      const albumTracks: TrackEntity[] =
-        this.trackRepository.findAllByAlbumId(id);
-
-      // TODO: refactor using Prisma
-      albumTracks.forEach((track) => {
-        this.trackRepository.update(track.id, {
-          ...track,
-          albumId: null,
-        });
-      });
-
-      this.favoritesRepository.deleteAlbum(id);
-
-      return;
-    }
+  async remove(id: string): Promise<Album> {
+    return await this.album.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

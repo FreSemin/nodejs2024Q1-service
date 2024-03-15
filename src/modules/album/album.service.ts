@@ -1,35 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { AlbumEntity } from './entity/album.entity';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
-import { ArtistEntity } from '../artist/entity/artist.entity';
+import { Album, Artist } from '@prisma/client';
 
 @Injectable()
 export class AlbumService {
   constructor(private readonly dbService: DbService) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
+  async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
     if (createAlbumDto.artistId) {
-      const artist: ArtistEntity | null =
-        this.dbService.artistRepository.findOne(createAlbumDto.artistId);
+      const artist: Artist | null =
+        await this.dbService.artistRepository.findOne(createAlbumDto.artistId);
 
       if (!artist) {
         throw new NotFoundError('Artist not found!');
       }
     }
 
-    return this.dbService.albumRepository.create(createAlbumDto);
+    return await this.dbService.albumRepository.create(createAlbumDto);
   }
 
-  findAll() {
-    return this.dbService.albumRepository.findAll();
+  async findAll(): Promise<Album[]> {
+    return await this.dbService.albumRepository.findAll();
   }
 
-  findOne(id: string) {
-    const album: AlbumEntity | null =
-      this.dbService.albumRepository.findOne(id);
+  async findOne(id: string): Promise<Album | null> {
+    const album: Album | null =
+      await this.dbService.albumRepository.findOne(id);
 
     if (!album) {
       // TODO: add message to config or constants
@@ -39,27 +38,27 @@ export class AlbumService {
     return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album: AlbumEntity = this.findOne(id);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
+    const album: Album = await this.findOne(id);
 
     if (updateAlbumDto.artistId) {
-      const artist: ArtistEntity | null =
-        this.dbService.artistRepository.findOne(updateAlbumDto.artistId);
+      const artist: Artist | null =
+        await this.dbService.artistRepository.findOne(updateAlbumDto.artistId);
 
       if (!artist) {
         throw new NotFoundError('Artist not found!');
       }
     }
 
-    return this.dbService.albumRepository.update(id, {
+    return await this.dbService.albumRepository.update(id, {
       ...album,
       ...updateAlbumDto,
     });
   }
 
-  remove(id: string) {
-    this.findOne(id);
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
 
-    this.dbService.albumRepository.remove(id);
+    await this.dbService.albumRepository.remove(id);
   }
 }

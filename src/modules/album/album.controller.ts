@@ -21,9 +21,9 @@ export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto) {
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
     try {
-      return this.albumService.create(createAlbumDto);
+      return await this.albumService.create(createAlbumDto);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -34,18 +34,18 @@ export class AlbumController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      return this.albumService.findAll();
+      return await this.albumService.findAll();
     } catch (err) {
       throw err;
     }
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.albumService.findOne(id);
+      return await this.albumService.findOne(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -56,12 +56,12 @@ export class AlbumController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
     try {
-      return this.albumService.update(id, updateAlbumDto);
+      return await this.albumService.update(id, updateAlbumDto);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -73,9 +73,9 @@ export class AlbumController {
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.albumService.remove(id);
+      return await this.albumService.remove(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
