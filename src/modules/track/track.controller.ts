@@ -21,9 +21,9 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
+  async create(@Body() createTrackDto: CreateTrackDto) {
     try {
-      return this.trackService.create(createTrackDto);
+      return await this.trackService.create(createTrackDto);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -34,18 +34,18 @@ export class TrackController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      return this.trackService.findAll();
+      return await this.trackService.findAll();
     } catch (err) {
       throw err;
     }
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.trackService.findOne(id);
+      return await this.trackService.findOne(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -56,12 +56,12 @@ export class TrackController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
     try {
-      return this.trackService.update(id, updateTrackDto);
+      return await this.trackService.update(id, updateTrackDto);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -73,9 +73,9 @@ export class TrackController {
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.trackService.remove(id);
+      return await this.trackService.remove(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);

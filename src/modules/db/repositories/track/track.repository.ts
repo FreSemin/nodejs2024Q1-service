@@ -1,62 +1,47 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from 'src/modules/track/dto/create-track.dto';
-import { FavoritesRepository } from '../favorites/favorites.repository';
-import { TrackEntity } from 'src/modules/track/entity/track.entity';
+import { PrismaClient, Track } from '@prisma/client';
 
 @Injectable()
-export class TrackRepository {
-  private track: TrackEntity[] = [];
-
-  constructor(
-    @Inject(forwardRef(() => FavoritesRepository))
-    private readonly favoritesRepository: FavoritesRepository,
-  ) {}
-
-  create(createTrackDto: CreateTrackDto): TrackEntity {
-    const track: TrackEntity = new TrackEntity(createTrackDto);
-
-    this.track.push(track);
-
-    return track;
+export class TrackRepository extends PrismaClient {
+  async create(createTrackDto: CreateTrackDto): Promise<Track> {
+    return await this.track.create({
+      data: createTrackDto,
+    });
   }
 
-  findAll(): TrackEntity[] {
-    return this.track;
+  async findAll(): Promise<Track[]> {
+    return await this.track.findMany();
   }
 
-  findAllByAlbumId(id: string): TrackEntity[] {
-    return this.track.filter((track) => track.albumId === id);
+  async findAllByAlbumId(id: string): Promise<Track[]> {
+    return await this.track.findMany({
+      where: {
+        albumId: id,
+      },
+    });
   }
 
-  findAllByArtistId(id: string): TrackEntity[] {
-    return this.track.filter((track) => track.artistId === id);
+  async findOne(id: string): Promise<Track | null> {
+    return (await this.track.findFirst({ where: { id } })) || null;
   }
 
-  findOne(id: string): TrackEntity | null {
-    return this.track.find((track) => track.id === id) || null;
+  async update(id: string, updatedTrack: Track): Promise<Track> {
+    return await this.track.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updatedTrack,
+      },
+    });
   }
 
-  update(id: string, updatedTrack: TrackEntity): TrackEntity | null {
-    const trackIndex: number = this.track.findIndex((track) => track.id === id);
-
-    if (trackIndex !== -1) {
-      this.track[trackIndex] = new TrackEntity(updatedTrack);
-
-      return this.track[trackIndex];
-    }
-
-    return null;
-  }
-
-  remove(id: string): void {
-    const trackIndex: number = this.track.findIndex((track) => track.id === id);
-
-    if (trackIndex !== -1) {
-      this.track.splice(trackIndex, 1);
-
-      this.favoritesRepository.deleteTrack(id);
-
-      return;
-    }
+  async remove(id: string): Promise<Track> {
+    return await this.track.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

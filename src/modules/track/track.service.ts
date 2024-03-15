@@ -3,18 +3,16 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
-import { TrackEntity } from './entity/track.entity';
-import { ArtistEntity } from '../artist/entity/artist.entity';
-import { AlbumEntity } from '../album/entity/album.entity';
+import { Album, Artist, Track } from '@prisma/client';
 
 @Injectable()
 export class TrackService {
   constructor(private readonly dbService: DbService) {}
 
-  create(createTrackDto: CreateTrackDto) {
+  async create(createTrackDto: CreateTrackDto): Promise<Track> {
     if (createTrackDto.artistId) {
-      const artist: ArtistEntity | null =
-        this.dbService.artistRepository.findOne(createTrackDto.artistId);
+      const artist: Artist | null =
+        await this.dbService.artistRepository.findOne(createTrackDto.artistId);
 
       if (!artist) {
         throw new NotFoundError('Artist not found!');
@@ -22,7 +20,7 @@ export class TrackService {
     }
 
     if (createTrackDto.albumId) {
-      const album: AlbumEntity | null = this.dbService.albumRepository.findOne(
+      const album: Album | null = await this.dbService.albumRepository.findOne(
         createTrackDto.albumId,
       );
 
@@ -31,16 +29,16 @@ export class TrackService {
       }
     }
 
-    return this.dbService.trackRepository.create(createTrackDto);
+    return await this.dbService.trackRepository.create(createTrackDto);
   }
 
-  findAll(): TrackEntity[] {
-    return this.dbService.trackRepository.findAll();
+  async findAll(): Promise<Track[]> {
+    return await this.dbService.trackRepository.findAll();
   }
 
-  findOne(id: string): TrackEntity {
-    const track: TrackEntity | null =
-      this.dbService.trackRepository.findOne(id);
+  async findOne(id: string): Promise<Track> {
+    const track: Track | null =
+      await this.dbService.trackRepository.findOne(id);
 
     if (!track) {
       // TODO: add message to config or constants
@@ -50,12 +48,12 @@ export class TrackService {
     return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto): TrackEntity {
-    const track: TrackEntity = this.findOne(id);
+  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
+    const track: Track = await this.findOne(id);
 
     if (updateTrackDto.artistId) {
-      const artist: ArtistEntity | null =
-        this.dbService.artistRepository.findOne(updateTrackDto.artistId);
+      const artist: Artist | null =
+        await this.dbService.artistRepository.findOne(updateTrackDto.artistId);
 
       if (!artist) {
         throw new NotFoundError('Artist not found!');
@@ -63,7 +61,7 @@ export class TrackService {
     }
 
     if (updateTrackDto.albumId) {
-      const album: AlbumEntity | null = this.dbService.albumRepository.findOne(
+      const album: Album | null = await this.dbService.albumRepository.findOne(
         updateTrackDto.albumId,
       );
 
@@ -72,15 +70,15 @@ export class TrackService {
       }
     }
 
-    return this.dbService.trackRepository.update(id, {
+    return await this.dbService.trackRepository.update(id, {
       ...track,
       ...updateTrackDto,
     });
   }
 
-  remove(id: string) {
-    this.findOne(id);
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
 
-    this.dbService.trackRepository.remove(id);
+    await this.dbService.trackRepository.remove(id);
   }
 }
