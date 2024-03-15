@@ -6,7 +6,7 @@ services:
     container_name: music-service-db
     build:
       context: .
-      dockerfile: docker/db.dockerfile
+      dockerfile: ./docker/db.dockerfile
     restart: unless-stopped
     networks:
       - music-service-network
