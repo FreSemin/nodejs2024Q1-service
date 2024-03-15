@@ -1,21 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { NotFoundError, UnprocessableEntityError } from 'src/utils';
 import { DbService } from '../db/db.service';
-import { TrackEntity } from '../track/entity/track.entity';
-import { ArtistEntity } from '../artist/entity/artist.entity';
-import { AlbumEntity } from '../album/entity/album.entity';
-import { FavoritesResponseEntity } from './entity/favorites.entity';
+import {
+  Album,
+  Artist,
+  FavoriteAlbum,
+  FavoriteArtist,
+  FavoriteTrack,
+  Track,
+} from '@prisma/client';
+import { FavoritesResponse } from './interface/favorites.interfaces';
 
 @Injectable()
 export class FavoritesService {
   constructor(private readonly dbService: DbService) {}
 
-  findAll(): FavoritesResponseEntity {
-    return this.dbService.favoritesRepository.findAll();
+  async findAll(): Promise<FavoritesResponse> {
+    return await this.dbService.favoritesRepository.findAll();
   }
 
-  addTrack(id: string): string {
-    const track: TrackEntity = this.dbService.trackRepository.findOne(id);
+  async addTrack(id: string): Promise<string> {
+    const track: Track = await this.dbService.trackRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!track) {
@@ -24,24 +29,24 @@ export class FavoritesService {
       );
     }
 
-    this.dbService.favoritesRepository.addTrack(id);
+    await this.dbService.favoritesRepository.addTrack(id);
 
     return 'Track was added to favorites!';
   }
 
-  deleteTrack(id: string): void {
-    const isFavorite: boolean =
-      this.dbService.favoritesRepository.isFavoriteTrack(id);
+  async deleteTrack(id: string): Promise<void> {
+    const favoriteTrack: FavoriteTrack =
+      await this.dbService.favoritesRepository.findTrack(id);
 
-    if (!isFavorite) {
+    if (!favoriteTrack) {
       throw new NotFoundError(`Track with id = ${id} is not favorite!`);
     }
 
-    this.dbService.favoritesRepository.deleteTrack(id);
+    await this.dbService.favoritesRepository.deleteTrack(favoriteTrack.id);
   }
 
-  addArtist(id: string): string {
-    const artist: ArtistEntity = this.dbService.artistRepository.findOne(id);
+  async addArtist(id: string): Promise<string> {
+    const artist: Artist = await this.dbService.artistRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!artist) {
@@ -50,24 +55,24 @@ export class FavoritesService {
       );
     }
 
-    this.dbService.favoritesRepository.addArtist(id);
+    await this.dbService.favoritesRepository.addArtist(id);
 
     return 'Artist was added to favorites!';
   }
 
-  deleteArtist(id: string): void {
-    const isFavorite: boolean =
-      this.dbService.favoritesRepository.isFavoriteArtist(id);
+  async deleteArtist(id: string): Promise<void> {
+    const favoriteArtist: FavoriteArtist =
+      await this.dbService.favoritesRepository.findArtist(id);
 
-    if (!isFavorite) {
+    if (!favoriteArtist) {
       throw new NotFoundError(`Artist with id = ${id} is not favorite!`);
     }
 
-    this.dbService.favoritesRepository.deleteArtist(id);
+    await this.dbService.favoritesRepository.deleteArtist(favoriteArtist.id);
   }
 
-  addAlbum(id: string): string {
-    const album: AlbumEntity = this.dbService.albumRepository.findOne(id);
+  async addAlbum(id: string): Promise<string> {
+    const album: Album = await this.dbService.albumRepository.findOne(id);
 
     // TODO: refactor add strings to constants
     if (!album) {
@@ -76,19 +81,19 @@ export class FavoritesService {
       );
     }
 
-    this.dbService.favoritesRepository.addAlbum(id);
+    await this.dbService.favoritesRepository.addAlbum(id);
 
     return 'Album was added to favorites!';
   }
 
-  deleteAlbum(id: string): void {
-    const isFavorite: boolean =
-      this.dbService.favoritesRepository.isFavoriteAlbum(id);
+  async deleteAlbum(id: string): Promise<void> {
+    const favoriteAlbum: FavoriteAlbum =
+      await this.dbService.favoritesRepository.findAlbum(id);
 
-    if (!isFavorite) {
+    if (!favoriteAlbum) {
       throw new NotFoundError(`Album with id = ${id} is not favorite!`);
     }
 
-    this.dbService.favoritesRepository.deleteAlbum(id);
+    await this.dbService.favoritesRepository.deleteAlbum(favoriteAlbum.id);
   }
 }

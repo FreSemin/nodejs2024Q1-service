@@ -1,114 +1,114 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { TrackRepository } from '../track/track.repository';
-import { ArtistRepository } from '../artist/artist.repository';
-import { AlbumRepository } from '../album/album.repository';
-import { TrackEntity } from 'src/modules/track/entity/track.entity';
-import { ArtistEntity } from 'src/modules/artist/entity/artist.entity';
-import { AlbumEntity } from 'src/modules/album/entity/album.entity';
+import { Injectable } from '@nestjs/common';
 import {
-  FavoritesEntity,
-  FavoritesResponseEntity,
-} from 'src/modules/favorites/entity/favorites.entity';
-
+  FavoriteAlbum,
+  FavoriteArtist,
+  FavoriteTrack,
+  PrismaClient,
+} from '@prisma/client';
+import {
+  FavoriteAlbumResponse,
+  FavoriteArtistResponse,
+  FavoriteTrackResponse,
+  FavoritesResponse,
+} from 'src/modules/favorites/interface/favorites.interfaces';
 @Injectable()
-export class FavoritesRepository {
-  private favorites: FavoritesEntity = new FavoritesEntity({});
-
-  constructor(
-    @Inject(forwardRef(() => ArtistRepository))
-    private readonly artistRepository: ArtistRepository,
-
-    @Inject(forwardRef(() => TrackRepository))
-    private readonly trackRepository: TrackRepository,
-
-    @Inject(forwardRef(() => AlbumRepository))
-    private readonly albumRepository: AlbumRepository,
-  ) {}
-
-  findAll(): FavoritesResponseEntity {
-    // TODO: refactor using Prisma
-    const artists: ArtistEntity[] = this.favorites.artists.map((artistId) => {
-      return this.artistRepository.findOne(artistId);
-    });
-
-    const tracks: TrackEntity[] = this.favorites.tracks.map((trackId) => {
-      return this.trackRepository.findOne(trackId);
-    });
-
-    const albums: AlbumEntity[] = this.favorites.albums.map((albumId) => {
-      return this.albumRepository.findOne(albumId);
-    });
-
-    return new FavoritesResponseEntity({
-      artists,
-      tracks,
-      albums,
-    });
-  }
-
-  addTrack(id: string): void {
-    this.favorites.tracks.push(id);
-  }
-
-  isFavoriteTrack(id: string): boolean {
-    return this.favorites.tracks.find((trackId) => trackId === id)
-      ? true
-      : false;
-  }
-
-  deleteTrack(id: string): void {
-    const trackIdIndex: number = this.favorites.tracks.findIndex(
-      (trackId) => trackId === id,
-    );
-
-    if (trackIdIndex !== -1) {
-      this.favorites.tracks.splice(trackIdIndex, 1);
-
-      return;
+export class FavoritesRepository extends PrismaClient {
+  private mapFavoritesResponse<
+    T extends
+      | FavoriteArtistResponse
+      | FavoriteAlbumResponse
+      | FavoriteTrackResponse,
+    K extends keyof FavoritesResponse,
+  >(
+    promiseResult: PromiseSettledResult<T[]>,
+    propertyToMap: keyof T,
+    favoritesProperty: K,
+    favoritesRes: FavoritesResponse,
+  ): void {
+    // TODO: add promise value to constants
+    if (promiseResult.status === 'fulfilled') {
+      favoritesRes[favoritesProperty] = promiseResult.value.map((item: T) => {
+        return { ...item[propertyToMap] };
+      }) as FavoritesResponse[K];
     }
   }
 
-  addArtist(id: string): void {
-    this.favorites.artists.push(id);
-  }
+  async findAll(): Promise<FavoritesResponse> {
+    return await Promise.allSettled([
+      this.favoriteArtist.findMany({ include: { artist: true } }),
+      this.favoriteAlbum.findMany({ include: { album: true } }),
+      this.favoriteTrack.findMany({ include: { track: true } }),
+    ]).then(
+      ([favoritesArtists, favoritesAlbums, favoritesTracks]: [
+        PromiseSettledResult<FavoriteArtistResponse[]>,
+        PromiseSettledResult<FavoriteAlbumResponse[]>,
+        PromiseSettledResult<FavoriteTrackResponse[]>,
+      ]) => {
+        const favorites: FavoritesResponse = {
+          artists: [],
+          albums: [],
+          tracks: [],
+        };
 
-  isFavoriteArtist(id: string): boolean {
-    return this.favorites.artists.find((artistId) => artistId === id)
-      ? true
-      : false;
-  }
+        this.mapFavoritesResponse(
+          favoritesArtists,
+          'artist',
+          'artists',
+          favorites,
+        );
 
-  deleteArtist(id: string): void {
-    const artistIdIndex: number = this.favorites.artists.findIndex(
-      (artistId) => artistId === id,
+        this.mapFavoritesResponse(
+          favoritesAlbums,
+          'album',
+          'albums',
+          favorites,
+        );
+
+        this.mapFavoritesResponse(
+          favoritesTracks,
+          'track',
+          'tracks',
+          favorites,
+        );
+
+        return favorites;
+      },
     );
-
-    if (artistIdIndex !== -1) {
-      this.favorites.artists.splice(artistIdIndex, 1);
-
-      return;
-    }
   }
 
-  addAlbum(id: string): void {
-    this.favorites.albums.push(id);
+  async addTrack(id: string): Promise<FavoriteTrack> {
+    return await this.favoriteTrack.create({ data: { trackId: id } });
   }
 
-  isFavoriteAlbum(id: string): boolean {
-    return this.favorites.albums.find((albumId) => albumId === id)
-      ? true
-      : false;
+  async findTrack(id: string): Promise<FavoriteTrack | null> {
+    return await this.favoriteTrack.findFirst({ where: { trackId: id } });
   }
 
-  deleteAlbum(id: string): void {
-    const albumIndex: number = this.favorites.albums.findIndex(
-      (albumId) => albumId === id,
-    );
+  async deleteTrack(favoriteId: string): Promise<FavoriteTrack> {
+    return await this.favoriteTrack.delete({ where: { id: favoriteId } });
+  }
 
-    if (albumIndex !== -1) {
-      this.favorites.albums.splice(albumIndex, 1);
+  async addArtist(id: string): Promise<FavoriteArtist> {
+    return await this.favoriteArtist.create({ data: { artistId: id } });
+  }
 
-      return;
-    }
+  async findArtist(id: string): Promise<FavoriteArtist | null> {
+    return await this.favoriteArtist.findFirst({ where: { artistId: id } });
+  }
+
+  async deleteArtist(favoriteId: string): Promise<FavoriteArtist> {
+    return await this.favoriteArtist.delete({ where: { id: favoriteId } });
+  }
+
+  async addAlbum(id: string): Promise<FavoriteAlbum> {
+    return await this.favoriteAlbum.create({ data: { albumId: id } });
+  }
+
+  async findAlbum(id: string): Promise<FavoriteAlbum | null> {
+    return await this.favoriteAlbum.findFirst({ where: { albumId: id } });
+  }
+
+  async deleteAlbum(favoriteId: string): Promise<FavoriteAlbum> {
+    return await this.favoriteAlbum.delete({ where: { id: favoriteId } });
   }
 }

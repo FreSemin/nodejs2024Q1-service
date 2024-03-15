@@ -18,18 +18,18 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      return this.favoritesService.findAll();
+      return await this.favoritesService.findAll();
     } catch (err) {
       throw err;
     }
   }
 
   @Post('track/:id')
-  addTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async addTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.favoritesService.addTrack(id);
+      return await this.favoritesService.addTrack(id);
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         throw new UnprocessableEntityException(err.message);
@@ -41,9 +41,11 @@ export class FavoritesController {
 
   @Delete('track/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  deleteTrack(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async deleteTrack(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
     try {
-      this.favoritesService.deleteTrack(id);
+      await this.favoritesService.deleteTrack(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -54,9 +56,11 @@ export class FavoritesController {
   }
 
   @Post('artist/:id')
-  addArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async addArtist(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
     try {
-      return this.favoritesService.addArtist(id);
+      return await this.favoritesService.addArtist(id);
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         throw new UnprocessableEntityException(err.message);
@@ -68,9 +72,11 @@ export class FavoritesController {
 
   @Delete('artist/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  deleteArtist(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async deleteArtist(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
     try {
-      this.favoritesService.deleteArtist(id);
+      await this.favoritesService.deleteArtist(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -81,9 +87,9 @@ export class FavoritesController {
   }
 
   @Post('album/:id')
-  addAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async addAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.favoritesService.addAlbum(id);
+      return await this.favoritesService.addAlbum(id);
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         throw new UnprocessableEntityException(err.message);
@@ -95,9 +101,11 @@ export class FavoritesController {
 
   @Delete('album/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  deleteAlbum(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async deleteAlbum(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ) {
     try {
-      this.favoritesService.deleteAlbum(id);
+      await this.favoritesService.deleteAlbum(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
