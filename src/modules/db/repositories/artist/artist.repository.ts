@@ -1,88 +1,37 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from 'src/modules/artist/dto/create-artist.dto';
-import { AlbumRepository } from '../album/album.repository';
-import { TrackRepository } from '../track/track.repository';
-import { FavoritesRepository } from '../favorites/favorites.repository';
-import { TrackEntity } from 'src/modules/track/entity/track.entity';
-import { ArtistEntity } from 'src/modules/artist/entity/artist.entity';
-import { AlbumEntity } from 'src/modules/album/entity/album.entity';
+import { Artist, PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class ArtistRepository {
-  private artist: ArtistEntity[] = [];
-
-  constructor(
-    private readonly albumRepository: AlbumRepository,
-
-    @Inject(forwardRef(() => TrackRepository))
-    private readonly trackRepository: TrackRepository,
-
-    @Inject(forwardRef(() => FavoritesRepository))
-    private readonly favoritesRepository: FavoritesRepository,
-  ) {}
-
-  create(createArtistDto: CreateArtistDto): ArtistEntity {
-    const artist: ArtistEntity = new ArtistEntity(createArtistDto);
-
-    this.artist.push(artist);
-
-    return artist;
+export class ArtistRepository extends PrismaClient {
+  async create(createArtistDto: CreateArtistDto): Promise<Artist> {
+    return await this.artist.create({ data: createArtistDto });
   }
 
-  findAll(): ArtistEntity[] {
-    return this.artist;
+  async findAll(): Promise<Artist[]> {
+    return await this.artist.findMany();
   }
 
-  findOne(id: string): ArtistEntity | null {
-    return this.artist.find((artist) => artist.id === id) || null;
+  async findOne(id: string): Promise<Artist | null> {
+    return (await this.artist.findFirst({ where: { id } })) || null;
   }
 
-  update(id: string, updatedArtist: ArtistEntity): ArtistEntity | null {
-    const artistIndex: number = this.artist.findIndex(
-      (artist) => artist.id === id,
-    );
-
-    if (artistIndex !== -1) {
-      this.artist[artistIndex] = new ArtistEntity(updatedArtist);
-
-      return this.artist[artistIndex];
-    }
-
-    return null;
+  async update(id: string, updatedArtist: Artist): Promise<Artist | null> {
+    return await this.artist.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updatedArtist,
+      },
+    });
   }
 
-  remove(id: string): void {
-    const artistIndex: number = this.artist.findIndex(
-      (artist) => artist.id === id,
-    );
-
-    if (artistIndex !== -1) {
-      this.artist.splice(artistIndex, 1);
-
-      // TODO: refactor using prisma
-      const artistAlbums: AlbumEntity[] =
-        this.albumRepository.findAllByArtistId(id);
-
-      artistAlbums.forEach((album) => {
-        this.albumRepository.update(album.id, {
-          ...album,
-          artistId: null,
-        });
-      });
-
-      const artistTracks: TrackEntity[] =
-        this.trackRepository.findAllByArtistId(id);
-
-      artistTracks.forEach((track) => {
-        this.trackRepository.update(track.id, {
-          ...track,
-          artistId: null,
-        });
-      });
-
-      this.favoritesRepository.deleteArtist(id);
-
-      return;
-    }
+  async remove(id: string): Promise<Artist> {
+    return await this.artist.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

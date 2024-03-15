@@ -3,23 +3,23 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { NotFoundError } from 'src/utils';
 import { DbService } from '../db/db.service';
-import { ArtistEntity } from './entity/artist.entity';
+import { Artist } from '@prisma/client';
 
 @Injectable()
 export class ArtistService {
   constructor(private readonly dbService: DbService) {}
 
-  create(createArtistDto: CreateArtistDto): ArtistEntity {
-    return this.dbService.artistRepository.create(createArtistDto);
+  async create(createArtistDto: CreateArtistDto): Promise<Artist> {
+    return await this.dbService.artistRepository.create(createArtistDto);
   }
 
-  findAll(): ArtistEntity[] {
-    return this.dbService.artistRepository.findAll();
+  async findAll(): Promise<Artist[]> {
+    return await this.dbService.artistRepository.findAll();
   }
 
-  findOne(id: string): ArtistEntity {
-    const artist: ArtistEntity | null =
-      this.dbService.artistRepository.findOne(id);
+  async findOne(id: string): Promise<Artist> {
+    const artist: Artist | null =
+      await this.dbService.artistRepository.findOne(id);
 
     if (!artist) {
       // TODO: add message to config or constants
@@ -29,18 +29,18 @@ export class ArtistService {
     return artist;
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto): ArtistEntity {
-    const artist: ArtistEntity = this.findOne(id);
+  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
+    const artist: Artist = await this.findOne(id);
 
-    return this.dbService.artistRepository.update(id, {
+    return await this.dbService.artistRepository.update(id, {
       ...artist,
       ...updateArtistDto,
     });
   }
 
-  remove(id: string) {
-    this.findOne(id);
+  async remove(id: string): Promise<void> {
+    await this.findOne(id);
 
-    this.dbService.artistRepository.remove(id);
+    await this.dbService.artistRepository.remove(id);
   }
 }

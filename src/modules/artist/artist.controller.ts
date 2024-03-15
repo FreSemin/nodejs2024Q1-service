@@ -21,27 +21,27 @@ export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
+  async create(@Body() createArtistDto: CreateArtistDto) {
     try {
-      return this.artistService.create(createArtistDto);
+      return await this.artistService.create(createArtistDto);
     } catch (err) {
       throw err;
     }
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     try {
-      return this.artistService.findAll();
+      return await this.artistService.findAll();
     } catch (err) {
       throw err;
     }
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.artistService.findOne(id);
+      return await this.artistService.findOne(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -52,12 +52,12 @@ export class ArtistController {
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
     try {
-      return this.artistService.update(id, updateArtistDto);
+      return await this.artistService.update(id, updateArtistDto);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
@@ -69,9 +69,9 @@ export class ArtistController {
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     try {
-      return this.artistService.remove(id);
+      return await this.artistService.remove(id);
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new NotFoundException(err.message);
