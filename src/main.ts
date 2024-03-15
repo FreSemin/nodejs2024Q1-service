@@ -13,7 +13,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // TODO: add default port to constants
-  const port = configService.get<number>('PORT') || 4000;
+  const port = configService.get<number>('PORT', 4000);
 
   app.useGlobalPipes(new ValidationPipe());
 
