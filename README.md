@@ -201,3 +201,9 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+### Troubleshooting
+
+- `nest command not found`
+  - delete `music-service-api` container, image, volume
+  - run command `docker compose up --build`
