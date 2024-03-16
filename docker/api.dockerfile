@@ -6,7 +6,7 @@ FROM node:${NODE_VERSION}-alpine as base
 
 WORKDIR /usr/src/app/api
 
-EXPOSE ${PORT:-4000}
+EXPOSE ${APP_PORT:-4000}
 
 ################################################################################
 # Production dependencies
