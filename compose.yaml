@@ -20,6 +20,7 @@ services:
       - .env
     volumes:
       - music-service-db-data:/var/lib/postgresql/data
+      - music-service-db-logs:/var/log/postgresql
     healthcheck:
       test: ['CMD', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
@@ -48,6 +49,7 @@ services:
 
 volumes:
   music-service-db-data:
+  music-service-db-logs:
 
 networks:
   music-service-network:
