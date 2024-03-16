@@ -24,6 +24,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "migration:deploy": "npx prisma migrate deploy",
+    "docker:scan": "docker scout cves music-service-api && docker scout cves music-service-db"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",
