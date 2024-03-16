@@ -204,6 +204,6 @@ For more information, visit: https://code.visualstudio.com/docs/editor/debugging
 
 ### Troubleshooting
 
-- `nest command not found`
+- `sh nest not found`
   - delete `music-service-api` container, image, volume
   - run command `docker compose up --build`
