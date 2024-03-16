@@ -1,11 +1,12 @@
 ARG NODE_VERSION=20.11.0
-ARG PORT=${PORT:-4000}
 
 ################################################################################
 # Base configuration
 FROM node:${NODE_VERSION}-alpine as base
 
 WORKDIR /usr/src/app/api
+
+EXPOSE ${PORT:-4000}
 
 ################################################################################
 # Production dependencies
@@ -41,8 +42,6 @@ COPY . .
 
 COPY --from=devdependencies /usr/src/app/api/node_modules ./node_modules
 
-EXPOSE ${PORT}
-
 CMD npx prisma generate && npm run start:dev
 
 ################################################################################
@@ -60,7 +59,5 @@ COPY --from=build /usr/src/app/api/node_modules/@prisma ./node_modules/@prisma
 COPY --from=build /usr/src/app/api/node_modules/.prisma ./node_modules/.prisma
 
 COPY --from=build /usr/src/app/api/dist ./dist
-
-EXPOSE ${PORT}
 
 CMD npm run start:prod
