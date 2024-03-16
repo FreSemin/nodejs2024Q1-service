@@ -50,6 +50,7 @@ FROM base as prod
 USER node
 
 COPY package.json .
+COPY doc ./doc/
 
 COPY --from=proddependencies /usr/src/app/api/node_modules ./node_modules
 
