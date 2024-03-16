@@ -202,6 +202,25 @@ Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
 
+### Vulnerabilities
+
+Docker gives opportunities to check images for vulnerabilities
+
+- (If application running locally) From the root run:
+
+  ```
+  npm run docker:scan
+  ```
+
+- (If application running using docker) from the root folder run:
+
+  ```
+  docker scout cves <api_container_name> && docker scout cves <db_container_name>
+
+  Example:
+  docker scout cves music-service-api && docker scout cves music-service-db
+  ```
+
 ### Troubleshooting
 
 - `sh nest not found`
