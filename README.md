@@ -221,6 +221,15 @@ Docker gives opportunities to check images for vulnerabilities
   docker scout cves music-service-api && docker scout cves music-service-db
   ```
 
+### Docker Hub images
+
+- fresemin/music-service-api - [link](https://hub.docker.com/r/fresemin/music-service-api)
+- fresemin/music-service-db - [link](https://hub.docker.com/r/fresemin/music-service-db)
+
+- (Using Docker Desktop) using search type:
+- fresemin/music-service-api
+- fresemin/music-service-db
+
 ### Troubleshooting
 
 - `sh nest not found`
