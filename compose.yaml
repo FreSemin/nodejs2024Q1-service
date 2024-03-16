@@ -1,9 +1,9 @@
-name: nodejs-music-service
+name: music-service
 version: '3.8'
 
 services:
-  music-service-db:
-    container_name: music-service-db
+  db:
+    container_name: db
     build:
       context: .
       dockerfile: ./docker/db.dockerfile
@@ -19,23 +19,23 @@ services:
     env_file:
       - .env
     volumes:
-      - music-service-db-data:/var/lib/postgresql/data
-      - music-service-db-logs:/var/log/postgresql
+      - db-data:/var/lib/postgresql/data
+      - db-logs:/var/log/postgresql
     healthcheck:
       test: ['CMD', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  music-service-api:
-    container_name: music-serivce-api
+  api:
+    container_name: api
     build:
       context: .
       dockerfile: ./docker/api.dockerfile
       target: '${NODE_ENV}'
     restart: unless-stopped
     depends_on:
-      music-service-db:
+      db:
         condition: service_started
     networks:
       - music-service-network
@@ -48,8 +48,8 @@ services:
       - /usr/src/app/api/node_modules
 
 volumes:
-  music-service-db-data:
-  music-service-db-logs:
+  db-data:
+  db-logs:
 
 networks:
   music-service-network:
