@@ -33,8 +33,6 @@ services:
       context: .
       dockerfile: ./docker/api.dockerfile
       target: '${NODE_ENV}'
-      args:
-        - APP_PORT=${APP_PORT}
     restart: unless-stopped
     depends_on:
       db:
@@ -42,7 +40,7 @@ services:
     networks:
       - music-service-network
     ports:
-      - '${APP_PORT:-4000}:4000'
+      - '${DOCKER_API_PORT:-4000}:${APP_PORT:-4000}'
     env_file:
       - .env
     volumes:

@@ -7,7 +7,9 @@ FROM node:${NODE_VERSION}-alpine as base
 
 WORKDIR /usr/src/app/api
 
-EXPOSE ${APP_PORT:-4000}
+# Note: .env is not available during build
+# Should equal to APP_PORT
+EXPOSE 4000
 
 ################################################################################
 # Production dependencies

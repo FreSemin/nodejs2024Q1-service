@@ -15,6 +15,8 @@ async function bootstrap() {
   // TODO: add default port to constants
   const port = configService.get<number>('APP_PORT', 4000);
 
+  const dockerPort = configService.get<number>('DOCKER_API_PORT', 4000);
+
   app.useGlobalPipes(new ValidationPipe());
 
   const swaggerDoc = YAML.parse(
@@ -26,6 +28,7 @@ async function bootstrap() {
   await app.listen(port).then(() => {
     // TODO: add message to constants
     console.log(`App listening on port: ${port}`);
+    console.log(`App binding to docker port: ${dockerPort}`);
   });
 }
 bootstrap();

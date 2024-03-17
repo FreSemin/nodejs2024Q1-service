@@ -66,53 +66,54 @@ npm run test
 
 1. Set `.env` variable `NODE_ENV` to `dev`
 2. Set `.env` variable `POSTGRES_HOST` to `<db_container_name>` (default = db)
-3. From the root run:
+3. (Optional) Set `.env` variable `DOCKER_API_PORT` to different from `4000` if port is busy.
+4. From the root run:
 
    ```
    docker compose up
    ```
 
-4. Run Prisma migrations (from the Docker Desktop):
+5. Run Prisma migrations (from the Docker Desktop):
 
-   4.1 Open tab 'Containers'
+   5.1 Open tab 'Containers'
 
-   4.2 Navigate to 'music-service-api' container
+   5.2 Navigate to 'music-service-api' container
 
-   4.3 Open tab 'Exec'
+   5.3 Open tab 'Exec'
 
-   4.4 Run command:
+   5.4 Run command:
 
    ```
     npm run migration:deploy
    ```
 
-5. (Skip if previous done) Run Prisma migrations from CLI:
+6. (Skip if previous done) Run Prisma migrations from CLI:
 
-   5.1 From the root run:
+   6.1 From the root run:
 
    ```
     docker container ls
    ```
 
-   5.2 Copy `music-service-api` container Id
+   6.2 Copy `music-service-api` container Id
 
-   5.3 Run Prisma migrations, from the root run:
+   6.3 Run Prisma migrations, from the root run:
 
    ```
     docker container exec <container_id> npm run migration:deploy
    ```
 
-6. (Optional) Change any files in `src` folder, verify that application bring new changes (wait some seconds)
+7. (Optional) Change any files in `src` folder, verify that application bring new changes (wait some seconds)
 
-7. (Optional) Run Tests:
+8. (Optional) Run Tests:
 
-   7.1 From Docker Desktop container execute command:
+   6.1 From Docker Desktop container execute command:
 
    ```
    npm run tests
    ```
 
-   7.2 From CLI run command:
+   6.2 From CLI run command:
 
    ```
     docker container exec <container_id> npm run test
@@ -122,37 +123,38 @@ npm run test
 
 1. Set `.env` variable `NODE_ENV` to `prod`
 2. Set `.env` variable `POSTGRES_HOST` to `<db_container_name>` (default = db)
-3. From the root run:
+3. (Optional) Set `.env` variable `DOCKER_API_PORT` to different from `4000` if you port is busy.
+4. From the root run:
 
    ```
    docker compose up
    ```
 
-4. Run Prisma migrations (from the Docker Desktop):
+5. Run Prisma migrations (from the Docker Desktop):
 
-   4.1 Open tab 'Containers'
+   5.1 Open tab 'Containers'
 
-   4.2 Navigate to 'music-service-api' container
+   5.2 Navigate to 'music-service-api' container
 
-   4.3 Open tab 'Exec'
+   5.3 Open tab 'Exec'
 
-   4.4 Run command:
+   5.4 Run command:
 
    ```
     npm run migration:deploy
    ```
 
-5. (Skip if previous done) Run Prisma migrations from CLI:
+6. (Skip if previous done) Run Prisma migrations from CLI:
 
-   5.1 From the root run:
+   6.1 From the root run:
 
    ```
     docker container ls
    ```
 
-   5.2 Copy `music-service-api` container Id
+   6.2 Copy `music-service-api` container Id
 
-   5.3 Run Prisma migrations, from the root run:
+   6.3 Run Prisma migrations, from the root run:
 
    ```
     docker container exec <container_id> npm run migration:deploy
