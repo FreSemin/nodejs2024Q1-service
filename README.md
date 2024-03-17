@@ -52,7 +52,7 @@ git clone https://github.com/FreSemin/nodejs2024Q1-service
    npm start
    ```
 
-After starting the app on port (4000 as default) you can open
+After starting the app on port `APP_PORT` (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
@@ -72,6 +72,8 @@ npm run test
    ```
    docker compose up
    ```
+
+By Default App running on port `APP_PORT` (4000) in container and bind to `DOCKER_API_PORT` (4002).
 
 5. Run Prisma migrations (from the Docker Desktop):
 
@@ -107,13 +109,13 @@ npm run test
 
 8. (Optional) Run Tests:
 
-   6.1 From Docker Desktop container execute command:
+   8.1 From Docker Desktop container execute command:
 
    ```
    npm run tests
    ```
 
-   6.2 From CLI run command:
+   8.2 From CLI run command:
 
    ```
     docker container exec <container_id> npm run test
@@ -129,6 +131,8 @@ npm run test
    ```
    docker compose up
    ```
+
+By Default App running on port `APP_PORT` (4000) in container and bind to `DOCKER_API_PORT` (4002).
 
 5. Run Prisma migrations (from the Docker Desktop):
 
