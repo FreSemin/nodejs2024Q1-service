@@ -216,8 +216,11 @@ Docker gives opportunities to check images for vulnerabilities
 
   ```
   docker scout cves <api_container_name> && docker scout cves <db_container_name>
+  ```
 
   Example:
+
+  ```
   docker scout cves music-service-api && docker scout cves music-service-db
   ```
 
