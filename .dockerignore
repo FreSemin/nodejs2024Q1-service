@@ -1,0 +1,12 @@
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/compose*
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/dist
+**/docker
+LICENSE
+README.md

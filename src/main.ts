@@ -1,8 +1,34 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { SwaggerModule } from '@nestjs/swagger';
+import { readFileSync } from 'fs';
+import * as YAML from 'yaml';
 
+// TODO: refactor
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(4000);
+
+  const configService = app.get(ConfigService);
+
+  // TODO: add default port to constants
+  const port = configService.get<number>('APP_PORT', 4000);
+
+  const dockerPort = configService.get<number>('DOCKER_API_PORT', 4000);
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  const swaggerDoc = YAML.parse(
+    readFileSync('./doc/api.yaml', { encoding: 'utf-8' }),
+  );
+
+  SwaggerModule.setup('doc', app, swaggerDoc);
+
+  await app.listen(port).then(() => {
+    // TODO: add message to constants
+    console.log(`App listening on port: ${port}`);
+    console.log(`App binding to docker port: ${dockerPort}`);
+  });
 }
 bootstrap();
